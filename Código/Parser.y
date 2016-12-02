@@ -153,7 +153,7 @@ var_decl: INT ID { tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo ); } SE
 			}
 			| INT ID { tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo ); } LBRACK NUM RBRACK SEMI
 			{
-				$$ = novoNodo( INTEGER_NODE );
+				$$ = novoNodo( INTEGER_VECTOR_NODE );
 				
 			};
 
@@ -280,8 +280,10 @@ write_call: WRITE LPAREN STRING RPAREN
 				};
 
 user_func_call: ID { check_funcao( tabelaFuncao, tokenSimbolo ); } LPAREN opt_arg_list RPAREN
-					{
-						$$ = $3;	
+					{						
+						//$$ = $3;	
+						$$ = novoNodo( FUNC_CALL_NODE );
+						adicionaFilho( $$, 1, $3 );
 						//free( tokenSimbolo );
 					};
 
