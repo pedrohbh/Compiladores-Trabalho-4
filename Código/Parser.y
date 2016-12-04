@@ -15,6 +15,7 @@
 %code requires{
 #include "Arvore.h"
 #include "Tabelas.h"
+#include "Interpretador.h"
 }
 
 
@@ -81,7 +82,7 @@ func_decl: func_header func_body
 					adicionaFilho( $$, 2, $1, $2 );
 				};
 
-func_header: ret_type ID { //printf("Nome função: %s\n", tokenSimbolo );
+func_header: ret_type ID {
 					tabelaFuncao = novaFuncao( tabelaFuncao, tokenSimbolo ); } LPAREN params RPAREN
 				{
 					$$ = novoNodo( FUNC_HEADER_NODE );
@@ -447,6 +448,8 @@ int main()
 	int resultado = yyparse();
 	if ( resultado == 0 )
 	{
+		stdin = fopen(ctermid(NULL), "r");
+      run_ast(arvore);
 		printf("PARSE SUCESSFUL!\n");
 		//imprimeTabelaSimbolos( tabelaSimbolos );
 		//print_dot( arvore );

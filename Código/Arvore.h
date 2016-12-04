@@ -44,6 +44,8 @@ typedef enum
 
 TreeNode *novoNodo( NodeKind kind );
 
+NodeKind getKind( TreeNode *ast );
+
 //void adicionaFilhoPrototipo( TreeNode *pai, TreeNode *filho, int posicao );
 
 void adicionaFilho( TreeNode *pai, int tamanho, ... );

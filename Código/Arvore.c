@@ -15,6 +15,11 @@ struct treeNode
 	int lineno;
 };
 
+NodeKind getKind( TreeNode *ast )
+{
+	return ast->kind;
+}
+
 
 TreeNode *novoNodo( NodeKind kind )
 {

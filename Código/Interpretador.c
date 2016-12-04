@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "Interpretador.h"
 
 // Data stack -----------------------------------------------------------------
@@ -53,17 +55,19 @@ void init_mem() {
 }
 
 // ----------------------------------------------------------------------------
+void rec_run_ast(TreeNode *ast);
+void run_func_decl_list( TreeNode *ast );
 
-
-void run_ast(AST *ast) {
+void run_ast(TreeNode *ast) {
     init_stack();
     init_mem();
     rec_run_ast(ast);
 }
 
-void rec_run_ast(AST *ast) {
-    switch(get_kind(ast)) {
+void rec_run_ast(TreeNode *ast) {
+    switch( getKind(ast) ) {
         case FUNC_DECL_LIST:
+				run_func_decl_list( ast );
             //run_stmt_seq(ast);
             break;
         case FUNC_DECL_NODE:
@@ -132,7 +136,7 @@ void rec_run_ast(AST *ast) {
 			case ARG_LIST_NODE:
 				break;
         default:
-            fprintf(stderr, "Invalid kind: %s!\n", kind2str(get_kind(ast)));
+            //fprintf(stderr, "Invalid kind: %s!\n", kind2str(get_kind(ast)));
             exit(1);
     }
 }
