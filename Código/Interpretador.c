@@ -137,6 +137,27 @@ void rec_run_ast(AST *ast) {
     }
 }
 
+#ifdef TRACE
+#define trace(msg) printf("TRACE: %s\n", msg)
+#else
+#define trace(msg)
+#endif
+
+void run_func_decl_list( TreeNode *ast )
+{
+	int i;
+	TreeNode *filho;
+	trace("func_decl_list");
+	for ( i = 0; i < 7; i++ )
+	{
+		filho = getFilho( ast, i );
+		if ( filho == NULL )
+			continue;
+		else
+			rec_run_ast( filho );
+	}
+}
+
 /*void run_stmt_seq(AST *ast) {
     trace("stmt_seq");
     int size = get_child_count(ast);

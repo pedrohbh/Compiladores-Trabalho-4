@@ -36,6 +36,16 @@ TreeNode *novoNodo( NodeKind kind )
 	return t;
 }
 
+TreeNode *getFilho( TreeNode *pai, int nFilho )
+{
+	if ( nFilho >= 7 )
+	{
+		puts("O número de filhos solicitado é maior que a capacidade. Encerrando compilador");
+		exit( 0 );
+	}
+	
+	return pai->filhosPtr[ nFilho ];
+}
 
 /*void adicionaFilhoPrototipo( TreeNode *pai, TreeNode *filho, int posicao )
 {

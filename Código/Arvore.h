@@ -54,5 +54,7 @@ int print_node_dot(TreeNode *node);
 
 void print_dot(TreeNode *tree);
 
+TreeNode *getFilho( TreeNode *pai, int nFilho );
+
 #endif
 
