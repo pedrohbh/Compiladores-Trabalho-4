@@ -137,7 +137,7 @@ void rec_run_ast(AST *ast) {
     }
 }
 
-void run_stmt_seq(AST *ast) {
+/*void run_stmt_seq(AST *ast) {
     trace("stmt_seq");
     int size = get_child_count(ast);
     for (int i = 0; i < size; i++) {
@@ -242,5 +242,5 @@ void run_id(AST *ast) {
     trace("id");
     int var_idx = get_data(ast);
     push(load(var_idx));
-}
+}*/
 
