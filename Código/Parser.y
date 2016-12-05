@@ -41,7 +41,8 @@ extern int yylineno;
 extern char *yytext;
 
 char *tokenSimbolo;
-//char *tokenLiteral;
+int numeroTemp = 0;
+int contadorId = 0;
 
 TabelaSimbolos *tabelaSimbolos = NULL;
 TabelaFuncao *tabelaFuncao = NULL;
@@ -198,6 +199,8 @@ assign_stmt: lval ASSIGN arith_expr SEMI
 lval: ID
 		{
 			check_var( tabelaSimbolos, tokenSimbolo );
+			$$ = novoNodo( SVAL_NODE );
+			setData( $$, contadorId++ );
 			//tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo );
 			//free( tokenSimbolo );
 			//$$ = novoNodo( LVAL_NODE ); Pode Dar problema aqui
@@ -366,7 +369,7 @@ arith_expr: arith_expr PLUS arith_expr
 				{
 					$$ = $1;
 				}
-				| NUM { $$ = novoNodo( NUMBER_NODE ); };
+				| NUM { $$ = novoNodo( NUMBER_NODE ); printf( "O valor de número é %d\n", numeroTemp ); setData( $$, numeroTemp ); };
 							
 				
 
@@ -444,16 +447,16 @@ void yyerror( char const *s )
 
 int main()
 {
-	puts("oi");
+	//puts("oi");
 	lt = create_lit_table();
 	int resultado = yyparse();
-	printf("Resultado: %d\n", resultado);
+	//printf("Resultado: %d\n", resultado);
 	if ( resultado == 0 )
 	{
-		puts("Opa");
+		//puts("Opa");
 		//stdin = fopen(ctermid(NULL), "r");
       //run_ast(arvore);
-		printf("PARSE SUCESSFUL!\n");
+		//printf("PARSE SUCESSFUL!\n");
 		//imprimeTabelaSimbolos( tabelaSimbolos );
 		print_dot( arvore );
 	}

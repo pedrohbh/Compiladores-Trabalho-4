@@ -254,7 +254,10 @@ void run_id(AST *ast) {
 }*/
 
 void rec_run_ast(TreeNode *ast) {
-    switch( getKind(ast) ) {
+    switch( getKind(ast) ) 
+	{
+			case SVAL_NODE:
+				break;
         case FUNC_DECL_LIST:
 				//run_func_decl_list( ast );
             //run_stmt_seq(ast);
@@ -284,6 +287,7 @@ void rec_run_ast(TreeNode *ast) {
             //run_minus(ast);
             break;
         case WRITE_NODE:
+				//run_write( ast );
             //run_times(ast);
             break;
         case ASSIGN_NODE:

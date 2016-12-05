@@ -30,6 +30,7 @@ typedef enum
 	VOID_NODE,
 	INTEGER_NODE,
 	INTEGER_VECTOR_NODE,
+	SVAL_NODE,
 	BOOL_EXPR_NODE,
 	ARG_LIST_NODE,
 	STMT_LIST_NODE,
@@ -47,6 +48,10 @@ typedef enum
 TreeNode *novoNodo( NodeKind kind );
 
 NodeKind getKind( TreeNode *ast );
+
+int getData( TreeNode *ast );
+
+void setData( TreeNode *ast, int valor );
 
 //void adicionaFilhoPrototipo( TreeNode *pai, TreeNode *filho, int posicao );
 

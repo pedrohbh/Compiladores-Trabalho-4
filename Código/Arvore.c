@@ -10,6 +10,8 @@ extern int yylineno;
 struct treeNode
 {
 	NodeKind kind;
+	int data; // Usado tanto para representar dados como id
+	char *nome;
 	//struct treeNode *irmaosPtr;
 	struct treeNode *filhosPtr[ 7 ];
 	int lineno;
@@ -20,6 +22,15 @@ NodeKind getKind( TreeNode *ast )
 	return ast->kind;
 }
 
+void setData( TreeNode *ast, int valor )
+{
+	ast->data = valor;
+}
+
+int getData( TreeNode *ast )
+{
+	return ast->data;
+}
 
 TreeNode *novoNodo( NodeKind kind )
 {
@@ -36,6 +47,8 @@ TreeNode *novoNodo( NodeKind kind )
 		
 		t->kind = kind;
 		t->lineno = yylineno;
+		t->data = 7770;
+		t->nome = NULL;
 	}
 
 	return t;
@@ -91,7 +104,7 @@ void node2str(TreeNode *node, char *s)
 {
     switch(node->kind)
 	 {
-		case NUMBER_NODE: sprintf(s, "%s", "Numero"); break;
+		case NUMBER_NODE: sprintf(s, "%s, %d", "Numero", getData( node ) ); break;
 		case PLUS_NODE:   sprintf(s, "%s", "+"); break;
 		case MINUS_NODE:  sprintf(s, "%s", "-"); break;
 		case TIMES_NODE:  sprintf(s, "%s", "*"); break;
@@ -126,6 +139,7 @@ void node2str(TreeNode *node, char *s)
 		case WHILE_NODE: sprintf( s, "%s", "While Node" ); break;
 		case OPT_STMT_LIST: sprintf( s, "%s", "Opt Stmt List" ); break;
 		case OPT_VAR_DECL: sprintf( s, "%s", "Opt Var Decl" ); break;
+		case SVAL_NODE: sprintf(s, "%s, %d", "SVAL", getData( node ) ); break;
 		//default: printf("Invalid node kind: %d!\n", node->kind);
     }
 }
