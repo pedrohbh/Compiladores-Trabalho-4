@@ -124,6 +124,8 @@ void node2str(TreeNode *node, char *s)
 		case FUNC_CALL_NODE: sprintf( s, "%s", "Func Call" ); break;
 		case INTEGER_VECTOR_NODE: sprintf( s, "%s", "Integer Vector Node" ); break;
 		case WHILE_NODE: sprintf( s, "%s", "While Node" ); break;
+		case OPT_STMT_LIST: sprintf( s, "%s", "Opt Stmt List" ); break;
+		case OPT_VAR_DECL: sprintf( s, "%s", "Opt Var Decl" ); break;
 		//default: printf("Invalid node kind: %d!\n", node->kind);
     }
 }

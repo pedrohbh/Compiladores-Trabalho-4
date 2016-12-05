@@ -98,9 +98,9 @@ func_body: LBRACE opt_var_decl opt_stmt_list RBRACE
 					adicionaFilho( $$, 2, $2, $3 );
 				};
 
-opt_var_decl: /* VAZIO */ | var_decl_list { $$ = $1; };
+opt_var_decl: /* VAZIO */ { $$ = novoNodo( OPT_VAR_DECL ); } | var_decl_list { $$ = $1; };
 
-opt_stmt_list: /* VAZIO */ | stmt_list { $$ = $1; };
+opt_stmt_list: /* VAZIO */ { $$ = novoNodo( OPT_STMT_LIST ); } | stmt_list { $$ = $1; };
 
 ret_type: INT { $$ = novoNodo( INTEGER_NODE ); } | VOID { $$ = novoNodo( VOID_NODE ); };
 
