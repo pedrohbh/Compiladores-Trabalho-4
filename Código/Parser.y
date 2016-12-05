@@ -86,7 +86,7 @@ func_header: ret_type ID {
 					tabelaFuncao = novaFuncao( tabelaFuncao, tokenSimbolo ); } LPAREN params RPAREN
 				{
 					$$ = novoNodo( FUNC_HEADER_NODE );
-					adicionaFilho( $$, 2, $1, $4 );
+					adicionaFilho( $$, 2, $1, $5 );
 					//printf("Nome função: %s\n", tokenSimbolo );
 					//tabelaFuncao = novaFuncao( tabelaFuncao, tokenSimbolo );
 					//free( tokenSimbolo );
@@ -284,7 +284,7 @@ user_func_call: ID { check_funcao( tabelaFuncao, tokenSimbolo ); } LPAREN opt_ar
 					{						
 						//$$ = $3;	
 						$$ = novoNodo( FUNC_CALL_NODE );
-						adicionaFilho( $$, 1, $3 );
+						adicionaFilho( $$, 1, $4 );
 						//free( tokenSimbolo );
 					};
 
@@ -444,15 +444,18 @@ void yyerror( char const *s )
 
 int main()
 {
+	puts("oi");
 	lt = create_lit_table();
 	int resultado = yyparse();
+	printf("Resultado: %d\n", resultado);
 	if ( resultado == 0 )
 	{
-		stdin = fopen(ctermid(NULL), "r");
-      run_ast(arvore);
+		puts("Opa");
+		//stdin = fopen(ctermid(NULL), "r");
+      //run_ast(arvore);
 		printf("PARSE SUCESSFUL!\n");
 		//imprimeTabelaSimbolos( tabelaSimbolos );
-		//print_dot( arvore );
+		print_dot( arvore );
 	}
 
 	return 0;

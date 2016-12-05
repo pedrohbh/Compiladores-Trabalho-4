@@ -64,94 +64,78 @@ void run_ast(TreeNode *ast) {
     rec_run_ast(ast);
 }
 
-void rec_run_ast(TreeNode *ast) {
-    switch( getKind(ast) ) {
-        case FUNC_DECL_LIST:
-				run_func_decl_list( ast );
-            //run_stmt_seq(ast);
-            break;
-        case FUNC_DECL_NODE:
-            //run_if(ast);
-            break;
-        case FUNC_HEADER_NODE:
-            //run_repeat(ast);
-            break;
-        case PARAM_LIST_NODE:
-            //run_assign(ast);
-            break;
-        case VAR_DECL_LIST_NODE:
-            //run_read(ast);
-            break;
-        case BLOCK_NODE:
-            //run_write(ast);
-            break;
-        case INPUT_NODE:
-            //run_plus(ast);
-            break;
-        case OUTPUT_NODE:
-            //run_minus(ast);
-            break;
-        case WRITE_NODE:
-            //run_times(ast);
-            break;
-        case ASSIGN_NODE:
-            //run_over(ast);
-            break;
-        case NUMBER_NODE:
-            //run_lt(ast);
-            break;
-        case INTEGER_NODE:  // INTEGER_NODE CORRESPONDE AO SVAR DA ESPECIFICAÇÃO. NÃO ESQUECER
-            //run_eq(ast);
-            break;
-			case INTEGER_VECTOR_NODE: // INTEGER_VECTOR_NODE CORRESPONDE AO CVAR DA ESPECIFICAÇÃO. NÃO ESQUECER
-            //run_num(ast);
-            break;
-        case PLUS_NODE:
-            //run_id(ast);
-            break;
-			case MINUS_NODE:
-				break;
-			case TIMES_NODE:
-				break;
-			case OVER_NODE:
-				break;
-			case LT_NODE:
-				break;
-			case LE_NODE:
-				break;
-			case GT_NODE:
-				break;
-			case GE_NODE:
-				break;
-			case EQ_NODE:
-				break;
-			case NEQ_NODE:
-				break;
-			case IF_NODE:
-				break;
-			case WHILE_NODE:
-				break;
-			case FUNC_CALL_NODE:
-				break;
-			case ARG_LIST_NODE:
-				break;
-        default:
-            //fprintf(stderr, "Invalid kind: %s!\n", kind2str(get_kind(ast)));
-            exit(1);
-    }
+
+void trace( char *s )
+{
+	printf("Trace: %s\n", s );
 }
 
-#ifdef TRACE
-#define trace(msg) printf("TRACE: %s\n", msg)
-#else
-#define trace(msg)
-#endif
+/*void run_func_decl_list( TreeNode *ast )
+{
+	int i;
+	TreeNode *filho;
+	trace("func_decl_list");
+	for ( i = 0; i < 7; i++ )
+	{
+		filho = getFilho( ast, i );
+		if ( filho == NULL )
+			continue;
+		else
+			rec_run_ast( filho );
+	}
+}
+
 
 void run_func_decl_list( TreeNode *ast )
 {
 	int i;
 	TreeNode *filho;
 	trace("func_decl_list");
+	for ( i = 0; i < 7; i++ )
+	{
+		filho = getFilho( ast, i );
+		if ( filho == NULL )
+			continue;
+		else
+			rec_run_ast( filho );
+	}
+}*/
+
+void run_func_decl_node( TreeNode *ast )
+{
+	int i;
+	TreeNode *filho;
+	trace("func_decl_node");
+	for ( i = 0; i < 7; i++ )
+	{
+		filho = getFilho( ast, i );
+		if ( filho == NULL )
+			continue;
+		else
+			rec_run_ast( filho );
+	}
+}
+
+void run_func_header_node( TreeNode *ast )
+{
+	int i;
+	TreeNode *filho;
+	trace("func_header_node");
+	for ( i = 0; i < 7; i++ )
+	{
+		filho = getFilho( ast, i );
+		if ( filho == NULL )
+			continue;
+		else
+			rec_run_ast( filho );
+	}
+}
+
+void run_func_body_node( TreeNode *ast )
+{
+	int i;
+	TreeNode *filho;
+	trace("func_body_node");
 	for ( i = 0; i < 7; i++ )
 	{
 		filho = getFilho( ast, i );
@@ -268,4 +252,94 @@ void run_id(AST *ast) {
     int var_idx = get_data(ast);
     push(load(var_idx));
 }*/
+
+void rec_run_ast(TreeNode *ast) {
+    switch( getKind(ast) ) {
+        case FUNC_DECL_LIST:
+				//run_func_decl_list( ast );
+            //run_stmt_seq(ast);
+            break;
+        case FUNC_DECL_NODE:
+            run_func_decl_node( ast );
+            break;
+        case FUNC_HEADER_NODE:
+            run_func_header_node( ast );
+            break;
+        case PARAM_LIST_NODE:
+            //run_assign(ast);
+            break;
+        case VAR_DECL_LIST_NODE:
+            //run_read(ast);
+            break;
+			case FUNC_BODY_NODE:
+				run_func_body_node( ast );
+				break;
+        case BLOCK_NODE:
+            //run_write(ast);
+            break;
+        case INPUT_NODE:
+            //run_plus(ast);
+            break;
+        case OUTPUT_NODE:
+            //run_minus(ast);
+            break;
+        case WRITE_NODE:
+            //run_times(ast);
+            break;
+        case ASSIGN_NODE:
+            //run_over(ast);
+            break;
+        case NUMBER_NODE:
+            //run_lt(ast);
+            break;
+        case INTEGER_NODE:  // INTEGER_NODE CORRESPONDE AO SVAR DA ESPECIFICAÇÃO. NÃO ESQUECER
+            //run_eq(ast);
+            break;
+			case INTEGER_VECTOR_NODE: // INTEGER_VECTOR_NODE CORRESPONDE AO CVAR DA ESPECIFICAÇÃO. NÃO ESQUECER
+            //run_num(ast);
+            break;
+        case PLUS_NODE:
+            //run_id(ast);
+            break;
+			case MINUS_NODE:
+				break;
+			case TIMES_NODE:
+				break;
+			case OVER_NODE:
+				break;
+			case LT_NODE:
+				break;
+			case LE_NODE:
+				break;
+			case GT_NODE:
+				break;
+			case GE_NODE:
+				break;
+			case EQ_NODE:
+				break;
+			case NEQ_NODE:
+				break;
+			case IF_NODE:
+				break;
+			case WHILE_NODE:
+				break;
+			case FUNC_CALL_NODE:
+				break;
+			case ARG_LIST_NODE:
+				break;
+			case VOID_NODE:
+				break;
+			case STRING_NODE:
+				break;
+			case RETURN_NODE:
+				break;
+			case BOOL_EXPR_NODE:
+				break;
+			case STMT_LIST_NODE:
+				break;
+        //default:
+            //fprintf(stderr, "Invalid kind: %s!\n", kind2str(get_kind(ast)));
+            //exit(1);
+    }
+}
 
