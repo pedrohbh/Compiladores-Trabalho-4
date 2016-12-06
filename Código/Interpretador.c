@@ -434,6 +434,27 @@ void run_lt_node( TreeNode *ast )
 		push( 0 );
 }
 
+void run_bool_expr_node( TreeNode *ast )
+{
+	trace("bool expr node");
+	TreeNode *filho;
+	filho = getFilho( ast, 0 );
+	if ( filho == NULL )
+		puts("Erro em bool expresion. O filho 0 é nulo" );
+	rec_run_ast( filho );
+
+	filho = getFilho( ast, 2 );
+	if ( filho == NULL )
+		puts("Erro em bool expresion. O filho 2 é nulo" );
+	rec_run_ast( filho );
+
+	filho = getFilho( ast, 1 );
+	if ( filho == NULL )
+		puts("Erro em bool expresion. O filho 1 é nulo" );
+}
+	
+
+
 void run_le_node( TreeNode *ast )
 {
 	trace("le node");
@@ -635,14 +656,19 @@ void rec_run_ast(TreeNode *ast) {
 				run_lt_node( ast );
 				break;
 			case LE_NODE:
+				run_le_node( ast );
 				break;
 			case GT_NODE:
+				run_gt_node( ast );
 				break;
 			case GE_NODE:
+				run_ge_node( ast );
 				break;
 			case EQ_NODE:
+				run_eq_node( ast );
 				break;
 			case NEQ_NODE:
+				run_neq_node( ast );
 				break;
 			case IF_NODE:
 				break;
@@ -659,6 +685,7 @@ void rec_run_ast(TreeNode *ast) {
 			case RETURN_NODE:
 				break;
 			case BOOL_EXPR_NODE:
+				run_bool_expr_node( ast );
 				break;
 			case STMT_LIST_NODE:
 				run_stmt_list_node( ast );
