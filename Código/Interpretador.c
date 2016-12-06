@@ -635,6 +635,37 @@ void run_block_node( TreeNode *ast )
 			rec_run_ast( filho );
 	}
 }
+
+void run_while_node( TreeNode *ast )
+{
+	trace("while node");
+	int i;
+	int resposta;
+	TreeNode *filho;
+	filho = getFilho( ast, 0 );
+	if ( filho == NULL )
+		puts("Erro em while. Filho 0 é igual a NULL");
+	rec_run_ast( filho );
+	resposta = pop();
+	while ( resposta == 1 )
+	{
+		for ( i = 1; i < 7; i++ )
+		{
+			filho = getFilho( ast, i );
+			if ( filho == NULL )
+				continue;
+			else
+				rec_run_ast( filho );
+		}
+		filho = getFilho( ast, 0 );
+		if ( filho == NULL )
+			puts("Erro em while. Filho 0 é igual a NULL");
+		rec_run_ast( filho );
+		resposta = pop();		
+	}
+	
+}
+	
 	
 
 void rec_run_ast(TreeNode *ast) {
@@ -716,6 +747,7 @@ void rec_run_ast(TreeNode *ast) {
 				run_if_node( ast );
 				break;
 			case WHILE_NODE:
+				run_while_node( ast );
 				break;
 			case FUNC_CALL_NODE:
 				break;
