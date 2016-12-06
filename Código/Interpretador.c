@@ -308,7 +308,19 @@ void run_number_node( TreeNode *ast )
 void run_output_node( TreeNode *ast )
 {
 	trace("Output node");
-	printf("%d\n", load( getData( getFilho( ast, 0 ) ) ) );
+	int i;
+	TreeNode *filho;
+	for ( i = 0; i < 7; i++ )
+	{
+		filho = getFilho( ast, i );
+		if ( filho == NULL )
+			continue;
+		else
+			rec_run_ast( filho );
+	}
+	int d = pop();
+	printf( "%d\n", d );
+	//printf("%d\n", load( getData( getFilho( ast, 0 ) ) ) );	DESCOMENTE AQUI EM CASO DE EMERGÊNCIA
 }
 
 void run_input_node( TreeNode *ast )
@@ -360,17 +372,71 @@ void run_over_node( TreeNode *ast )
 	push( c );
 }
 
+void run_times_node( TreeNode *ast )
+{
+	trace("Times node");
+	int i;
+	TreeNode *filho;
+	for ( i = 0; i < 7; i++ )
+	{
+		filho = getFilho( ast, i );
+		if ( filho == NULL )
+			continue;
+		else
+			rec_run_ast( filho );
+	}
+	int a = pop();
+	int b = pop();
+	printf("Multiplicação: Valor de a: %d. Valor de b: %d\n", a, b );
+	int c = b * a;
+	push( c );
+}
+
+void run_minus_node( TreeNode *ast )
+{
+	trace("Minus node");
+	int i;
+	TreeNode *filho;
+	for ( i = 0; i < 7; i++ )
+	{
+		filho = getFilho( ast, i );
+		if ( filho == NULL )
+			continue;
+		else
+			rec_run_ast( filho );
+	}
+	int a = pop();
+	int b = pop();
+	printf("Subtração: Valor de a: %d. Valor de b: %d\n", a, b );
+	int c = b - a;
+	push( c );
+}
+
+
+
 void run_write_node( TreeNode *ast )
 {
 	trace("write node");
 	char *string;
 	TreeNode *filho = getFilho( ast, 0 );
+	if ( filho == NULL )
+		puts("Filho errou");
 	string = getNome( filho );
+	if ( string == NULL )
+		puts("Errou a string");
+	
+	//printf("String: %s\n", string );
 	char *achador = strpbrk( string, "\\n" );
+	
 	if ( achador != NULL )
 	{
-		string = strtok( string, "\\n" );
-		printf("%s\n", string );
+		if ( strcmp( string, "\\n" ) == 0 )
+			printf("\n");
+		else
+		{
+			string = strtok( string, "\\n" );
+			printf("%s\n", string );
+		}
 	}
 	else
 		printf("%s", string );
@@ -424,8 +490,10 @@ void rec_run_ast(TreeNode *ast) {
             run_plus_node( ast );
             break;
 			case MINUS_NODE:
+				run_minus_node( ast );
 				break;
 			case TIMES_NODE:
+				run_times_node( ast );
 				break;
 			case OVER_NODE:
 				run_over_node( ast );
