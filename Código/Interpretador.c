@@ -316,7 +316,6 @@ void run_plus_node( TreeNode *ast )
 	trace("Plus node");
 	int i;
 	TreeNode *filho;
-	trace("stmt_list_node");
 	for ( i = 0; i < 7; i++ )
 	{
 		filho = getFilho( ast, i );
@@ -329,6 +328,26 @@ void run_plus_node( TreeNode *ast )
 	int b = pop();
 	printf("SOMA: Valor de a: %d. Valor de b: %d\n", a, b );
 	int c = a + b;
+	push( c );
+}
+
+void run_over_node( TreeNode *ast )
+{
+	trace("Over node");
+	int i;
+	TreeNode *filho;
+	for ( i = 0; i < 7; i++ )
+	{
+		filho = getFilho( ast, i );
+		if ( filho == NULL )
+			continue;
+		else
+			rec_run_ast( filho );
+	}
+	int a = pop();
+	int b = pop();
+	printf("Divisão: Valor de a: %d. Valor de b: %d\n", a, b );
+	int c = b / a;
 	push( c );
 }
 
@@ -399,6 +418,7 @@ void rec_run_ast(TreeNode *ast) {
 			case TIMES_NODE:
 				break;
 			case OVER_NODE:
+				run_over_node( ast );
 				break;
 			case LT_NODE:
 				break;
