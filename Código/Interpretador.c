@@ -311,6 +311,15 @@ void run_output_node( TreeNode *ast )
 	printf("%d\n", load( getData( getFilho( ast, 0 ) ) ) );
 }
 
+void run_input_node( TreeNode *ast )
+{
+	trace("Input Node");
+	int d;
+	printf("input: ");
+	scanf( "%d", &d );
+	push( d );
+}
+
 void run_plus_node( TreeNode *ast )
 {
 	trace("Plus node");
@@ -364,7 +373,7 @@ void run_write_node( TreeNode *ast )
 		printf("%s\n", string );
 	}
 	else
-		printf("%s\n", string );
+		printf("%s", string );
 }
 
 void rec_run_ast(TreeNode *ast) {
@@ -391,6 +400,7 @@ void rec_run_ast(TreeNode *ast) {
         case BLOCK_NODE:
             break;
         case INPUT_NODE:
+				run_input_node( ast );
             break;
         case OUTPUT_NODE:
 				run_output_node( ast );
