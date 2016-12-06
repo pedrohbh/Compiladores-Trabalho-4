@@ -575,6 +575,7 @@ void run_if_node( TreeNode *ast )
 		puts("Erro em filho node. Filho 0 é nulo");
 	rec_run_ast( filho );
 	int resposta = pop();
+	printf("Resposta do if: %d\n", resposta );
 	if ( resposta == 1 )
 	{
 		filho = getFilho( ast, 1 );
@@ -620,6 +621,22 @@ void run_write_node( TreeNode *ast )
 		printf("%s", string );
 }
 
+void run_block_node( TreeNode *ast )
+{
+	trace("block node");
+	int i;
+	TreeNode *filho;
+	for ( i = 0; i < 7; i++ )
+	{
+		filho = getFilho( ast, i );
+		if ( filho == NULL )
+			continue;
+		else
+			rec_run_ast( filho );
+	}
+}
+	
+
 void rec_run_ast(TreeNode *ast) {
     switch( getKind(ast) ) 
 	{
@@ -642,6 +659,7 @@ void rec_run_ast(TreeNode *ast) {
 				run_func_body_node( ast );
 				break;
         case BLOCK_NODE:
+				run_block_node( ast );
             break;
         case INPUT_NODE:
 				run_input_node( ast );
