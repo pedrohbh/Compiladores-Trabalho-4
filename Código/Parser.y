@@ -156,10 +156,14 @@ var_decl: INT ID { tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contad
 				$$ = novoNodo( SVAL_NODE );
 				setData( $$, contadorId++ );									
 			}
-			| INT ID { tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId++ ); } LBRACK NUM RBRACK SEMI
+			| INT ID { tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId ); } LBRACK NUM RBRACK SEMI
 			{
-				$$ = novoNodo( INTEGER_VECTOR_NODE );
-				setData( $$, contadorId );
+				$$ = novoNodo( CVAL_NODE );
+				setData( $$, contadorId++ );
+				adicionaFilho( $$, 1, novoNodo( NUMBER_NODE ) );
+				setData( getFilho( $$, 0 ), numeroTemp );
+				printf("O valor do número em CVAL é %d\n", numeroTemp );
+				
 			};
 
 stmt_list: stmt_list stmt
@@ -210,12 +214,12 @@ lval: ID
 		}
 		| ID LBRACK NUM RBRACK
 		{
-			$$ = novoNodo( NUMBER_NODE );
-			check_var( tabelaSimbolos, tokenSimbolo );
-			//tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo );
-			//free( tokenSimbolo );
-			//$$ = novoNodo( LVAL_NODE );
-			//adicionaFilho( $$, 1, novoNodo( NUMBER_NODE ) );
+			int id = check_var( tabelaSimbolos, tokenSimbolo );
+			$$ = novoNodo( CVAL_NODE );
+			setData( $$, id );
+			adicionaFilho( $$, 1, novoNodo( NUMBER_NODE ) );
+			printf("Valor do número da varíavel composto é: %d\n", numeroTemp );
+			setData( getFilho( $$, 0 ), numeroTemp );
 		}
 		| ID LBRACK ID RBRACK
 		{
@@ -459,11 +463,11 @@ int main()
 	if ( resultado == 0 )
 	{
 		//puts("Opa");
-		stdin = fopen(ctermid(NULL), "r");
-      run_ast(arvore);
+		//stdin = fopen(ctermid(NULL), "r");
+      //run_ast(arvore);
 		//printf("PARSE SUCESSFUL!\n");
 		//imprimeTabelaSimbolos( tabelaSimbolos );
-		//print_dot( arvore );
+		print_dot( arvore );
 	}
 
 	return 0;

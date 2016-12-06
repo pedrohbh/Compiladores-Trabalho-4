@@ -674,6 +674,9 @@ void rec_run_ast(TreeNode *ast) {
 			case SVAL_NODE:
 				run_sval_node( ast );
 				break;
+			case CVAL_NODE:
+				//run_cval_node( ast );
+				break;
         case FUNC_DECL_LIST:
             break;
         case FUNC_DECL_NODE:

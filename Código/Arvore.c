@@ -157,6 +157,7 @@ void node2str(TreeNode *node, char *s)
 		case OPT_STMT_LIST: sprintf( s, "%s", "Opt Stmt List" ); break;
 		case OPT_VAR_DECL: sprintf( s, "%s", "Opt Var Decl" ); break;
 		case SVAL_NODE: sprintf(s, "%s, %d", "SVAL", getData( node ) ); break;
+		case CVAL_NODE: sprintf( s, "%s, %d", "CVAL", getData( node ) ); break;
 		//default: printf("Invalid node kind: %d!\n", node->kind);
     }
 }
