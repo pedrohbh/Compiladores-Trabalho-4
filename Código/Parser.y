@@ -151,7 +151,8 @@ var_decl_list: var_decl_list var_decl
 
 var_decl: INT ID { tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo ); } SEMI
 			{
-				$$ = novoNodo( INTEGER_NODE );									
+				$$ = novoNodo( SVAL_NODE );
+				setData( $$, contadorId++ );									
 			}
 			| INT ID { tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo ); } LBRACK NUM RBRACK SEMI
 			{
@@ -200,7 +201,7 @@ lval: ID
 		{
 			check_var( tabelaSimbolos, tokenSimbolo );
 			$$ = novoNodo( SVAL_NODE );
-			setData( $$, contadorId++ );
+			setData( $$, contadorId );
 			//tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo );
 			//free( tokenSimbolo );
 			//$$ = novoNodo( LVAL_NODE ); Pode Dar problema aqui
