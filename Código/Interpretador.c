@@ -412,6 +412,139 @@ void run_minus_node( TreeNode *ast )
 	push( c );
 }
 
+void run_lt_node( TreeNode *ast )
+{
+	trace("lt node");
+	int i;
+	TreeNode *filho;
+	for ( i = 0; i < 7; i++ )
+	{
+		filho = getFilho( ast, i );
+		if ( filho == NULL )
+			continue;
+		else
+			rec_run_ast( filho );
+	}
+	int a = pop();
+	int b = pop();
+	printf("LESS THEN: Valor de a: %d. Valor de b: %d\n", a , b );
+	if ( b < a )
+		push( 1 );
+	else
+		push( 0 );
+}
+
+void run_le_node( TreeNode *ast )
+{
+	trace("le node");
+	int i;
+	TreeNode *filho;
+	for ( i = 0; i < 7; i++ )
+	{
+		filho = getFilho( ast, i );
+		if ( filho == NULL )
+			continue;
+		else
+			rec_run_ast( filho );
+	}
+	int a = pop();
+	int b = pop();
+	printf("LESS EQUAL: Valor de a: %d. Valor de b: %d\n", a , b );
+	if ( b <= a )
+		push( 1 );
+	else
+		push( 0 );
+}
+
+void run_gt_node( TreeNode *ast )
+{
+	trace("gt node");
+	int i;
+	TreeNode *filho;
+	for ( i = 0; i < 7; i++ )
+	{
+		filho = getFilho( ast, i );
+		if ( filho == NULL )
+			continue;
+		else
+			rec_run_ast( filho );
+	}
+	int a = pop();
+	int b = pop();
+	printf("GREATER THEN: Valor de a: %d. Valor de b: %d\n", a , b );
+	if ( b > a )
+		push( 1 );
+	else
+		push( 0 );
+}
+
+void run_ge_node( TreeNode *ast )
+{
+	trace("ge node");
+	int i;
+	TreeNode *filho;
+	for ( i = 0; i < 7; i++ )
+	{
+		filho = getFilho( ast, i );
+		if ( filho == NULL )
+			continue;
+		else
+			rec_run_ast( filho );
+	}
+	int a = pop();
+	int b = pop();
+	printf("LESS THEN: Valor de a: %d. Valor de b: %d\n", a , b );
+	if ( b >= a )
+		push( 1 );
+	else
+		push( 0 );
+}
+
+void run_eq_node( TreeNode *ast )
+{
+	trace("eq node");
+	int i;
+	TreeNode *filho;
+	for ( i = 0; i < 7; i++ )
+	{
+		filho = getFilho( ast, i );
+		if ( filho == NULL )
+			continue;
+		else
+			rec_run_ast( filho );
+	}
+	int a = pop();
+	int b = pop();
+	printf("EQUAL: Valor de a: %d. Valor de b: %d\n", a , b );
+	if ( b == a )
+		push( 1 );
+	else
+		push( 0 );
+}
+
+void run_neq_node( TreeNode *ast )
+{
+	trace("neq node");
+	int i;
+	TreeNode *filho;
+	for ( i = 0; i < 7; i++ )
+	{
+		filho = getFilho( ast, i );
+		if ( filho == NULL )
+			continue;
+		else
+			rec_run_ast( filho );
+	}
+	int a = pop();
+	int b = pop();
+	printf("NOT EQUAL: Valor de a: %d. Valor de b: %d\n", a , b );
+	if ( b != a )
+		push( 1 );
+	else
+		push( 0 );
+}
+	
+
 
 
 void run_write_node( TreeNode *ast )
@@ -499,6 +632,7 @@ void rec_run_ast(TreeNode *ast) {
 				run_over_node( ast );
 				break;
 			case LT_NODE:
+				run_lt_node( ast );
 				break;
 			case LE_NODE:
 				break;
