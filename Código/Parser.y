@@ -30,8 +30,8 @@ void yyerror(char const *s);
 LitTable *lt;
 
 
-TabelaSimbolos *newVar( TabelaSimbolos *tb,  char *nome );
-void check_var(TabelaSimbolos *tb, char *nome );
+TabelaSimbolos *newVar( TabelaSimbolos *tb,  char *nome, int id );
+int check_var(TabelaSimbolos *tb, char *nome );
 
 TabelaFuncao *novaFuncao( TabelaFuncao *tb,  char *nome );
 void check_funcao( TabelaFuncao *tb, char *nome );
@@ -127,7 +127,8 @@ param_list: param_list COMMA param
 param: INT ID
 		{
 			$$ = novoNodo( INTEGER_NODE );
-			tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo );
+			tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId );
+			setData( $$, contadorId++ );
 			//printf("VAR: %s\n", tokenSimbolo );
 			//free( tokenSimbolo );
 			//printf("O valor do simbolo é: %s\n", tokenSimbolo );
@@ -135,7 +136,7 @@ param: INT ID
 		| INT ID LBRACK RBRACK
 		{
 			$$ = novoNodo( INTEGER_NODE );
-			tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo );
+			tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId++ );
 			//free( tokenSimbolo );
 		};
 
@@ -149,15 +150,15 @@ var_decl_list: var_decl_list var_decl
 						$$ = $1;
 					};
 
-var_decl: INT ID { tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo ); } SEMI
+var_decl: INT ID { tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId ); } SEMI
 			{
 				$$ = novoNodo( SVAL_NODE );
 				setData( $$, contadorId++ );									
 			}
-			| INT ID { tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo ); } LBRACK NUM RBRACK SEMI
+			| INT ID { tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId++ ); } LBRACK NUM RBRACK SEMI
 			{
 				$$ = novoNodo( INTEGER_VECTOR_NODE );
-				
+				setData( $$, contadorId );
 			};
 
 stmt_list: stmt_list stmt
@@ -199,9 +200,9 @@ assign_stmt: lval ASSIGN arith_expr SEMI
 
 lval: ID
 		{
-			check_var( tabelaSimbolos, tokenSimbolo );
+			int id = check_var( tabelaSimbolos, tokenSimbolo );
 			$$ = novoNodo( SVAL_NODE );
-			setData( $$, contadorId );
+			setData( $$, id );
 			//tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo );
 			//free( tokenSimbolo );
 			//$$ = novoNodo( LVAL_NODE ); Pode Dar problema aqui
@@ -409,7 +410,7 @@ void check_funcao(TabelaFuncao *tb, char *nome )
 }
 
 
-TabelaSimbolos *newVar( TabelaSimbolos *tb,  char *nome )
+TabelaSimbolos *newVar( TabelaSimbolos *tb,  char *nome, int id )
 {
 	int idx = buscaTabelaSimbolos( tb, nome );
 	
@@ -419,13 +420,13 @@ TabelaSimbolos *newVar( TabelaSimbolos *tb,  char *nome )
 		exit( 1 );
 	}
 
-	tb = insereTabelaSimbolos( tb, nome,  yylineno );
+	tb = insereTabelaSimbolos( tb, nome,  yylineno, id );
 
 	return tb;
 
 }
 
-void check_var(TabelaSimbolos *tb, char *nome ) 
+int check_var(TabelaSimbolos *tb, char *nome ) 
 {
     int idx = buscaTabelaSimbolos( tb, nome );
 
@@ -436,8 +437,7 @@ void check_var(TabelaSimbolos *tb, char *nome )
 
 	TabelaSimbolos *it = getNodo( tb, nome );
 	insereNovaLinha( it, yylineno );
-
-	
+	return idx;	
 }
 
 
@@ -455,11 +455,11 @@ int main()
 	if ( resultado == 0 )
 	{
 		//puts("Opa");
-		//stdin = fopen(ctermid(NULL), "r");
-      //run_ast(arvore);
+		stdin = fopen(ctermid(NULL), "r");
+      run_ast(arvore);
 		//printf("PARSE SUCESSFUL!\n");
 		//imprimeTabelaSimbolos( tabelaSimbolos );
-		print_dot( arvore );
+		//print_dot( arvore );
 	}
 
 	return 0;

@@ -253,14 +253,91 @@ void run_id(AST *ast) {
     push(load(var_idx));
 }*/
 
+void run_sval_node( TreeNode *ast )
+{
+	push( load( getData( ast ) ) );
+	printf("sval_node: ID = %d valor =  %d\n", getData( ast ), load( getData( ast ) ) );
+}
+
+void run_assign_node( TreeNode *ast )
+{
+	//int i;
+	TreeNode *filho;
+	trace("assign_node");
+	filho = getFilho( ast, 1 );
+	if ( filho == NULL )
+	{
+		puts("Erro em ASSIGN NODE. Filho 1");
+		exit( 0 );
+	}
+	rec_run_ast( filho );
+	
+	filho = getFilho( ast, 0 );
+	if ( filho == NULL )
+	{
+		puts("Erro em ASSIGN NODE. Filho 2");
+		exit( 0 );
+	}
+	
+	store( getData( filho ), pop() );
+	//rec_run_ast( filho );
+}
+
+void run_stmt_list_node( TreeNode *ast )
+{
+	int i;
+	TreeNode *filho;
+	trace("stmt_list_node");
+	for ( i = 0; i < 7; i++ )
+	{
+		filho = getFilho( ast, i );
+		if ( filho == NULL )
+			continue;
+		else
+			rec_run_ast( filho );
+	}	
+}
+
+void run_number_node( TreeNode *ast )
+{
+	printf("Number: %d\n", getData( ast ) );
+	push( getData( ast ) );
+}
+
+void run_output_node( TreeNode *ast )
+{
+	trace("Output node");
+	printf("%d\n", load( getData( getFilho( ast, 0 ) ) ) );
+}
+
+void run_plus_node( TreeNode *ast )
+{
+	trace("Plus node");
+	int i;
+	TreeNode *filho;
+	trace("stmt_list_node");
+	for ( i = 0; i < 7; i++ )
+	{
+		filho = getFilho( ast, i );
+		if ( filho == NULL )
+			continue;
+		else
+			rec_run_ast( filho );
+	}
+	int a = pop();
+	int b = pop();
+	printf("SOMA: Valor de a: %d. Valor de b: %d\n", a, b );
+	int c = a + b;
+	push( c );
+}
+
 void rec_run_ast(TreeNode *ast) {
     switch( getKind(ast) ) 
 	{
 			case SVAL_NODE:
+				run_sval_node( ast );
 				break;
         case FUNC_DECL_LIST:
-				//run_func_decl_list( ast );
-            //run_stmt_seq(ast);
             break;
         case FUNC_DECL_NODE:
             run_func_decl_node( ast );
@@ -269,32 +346,26 @@ void rec_run_ast(TreeNode *ast) {
             run_func_header_node( ast );
             break;
         case PARAM_LIST_NODE:
-            //run_assign(ast);
             break;
         case VAR_DECL_LIST_NODE:
-            //run_read(ast);
             break;
 			case FUNC_BODY_NODE:
 				run_func_body_node( ast );
 				break;
         case BLOCK_NODE:
-            //run_write(ast);
             break;
         case INPUT_NODE:
-            //run_plus(ast);
             break;
         case OUTPUT_NODE:
-            //run_minus(ast);
+				run_output_node( ast );
             break;
         case WRITE_NODE:
-				//run_write( ast );
-            //run_times(ast);
             break;
         case ASSIGN_NODE:
-            //run_over(ast);
+				run_assign_node( ast );
             break;
         case NUMBER_NODE:
-            //run_lt(ast);
+            run_number_node( ast );
             break;
         case INTEGER_NODE:  // INTEGER_NODE CORRESPONDE AO SVAR DA ESPECIFICAÇÃO. NÃO ESQUECER
             //run_eq(ast);
@@ -303,7 +374,7 @@ void rec_run_ast(TreeNode *ast) {
             //run_num(ast);
             break;
         case PLUS_NODE:
-            //run_id(ast);
+            run_plus_node( ast );
             break;
 			case MINUS_NODE:
 				break;
@@ -340,6 +411,7 @@ void rec_run_ast(TreeNode *ast) {
 			case BOOL_EXPR_NODE:
 				break;
 			case STMT_LIST_NODE:
+				run_stmt_list_node( ast );
 				break;
 			case OPT_STMT_LIST:
 				break;

@@ -173,7 +173,7 @@ TabelaFuncao *insereTabelaFuncao( TabelaFuncao *tb, char *nome, int linha )
 struct tabelaSimbolos
 {
 	char *nome;
-	//int tamanho;
+	int id;
 	LinhaLista *linhas;
 	struct tabelaSimbolos *proximoPtr;
 };
@@ -186,7 +186,7 @@ int buscaTabelaSimbolos( TabelaSimbolos *tb, char *nome )
 	for ( it = tb; it != NULL; it = it->proximoPtr )
 	{
 		if ( strcmp( nome, it->nome ) == 0 )
-			return i;
+			return it->id;
 
 		i++;
 	}
@@ -249,7 +249,7 @@ void insereNovaLinha( TabelaSimbolos *nodo, int linha )
 }		
 			
 
-TabelaSimbolos *insereTabelaSimbolos( TabelaSimbolos *tb, char *nome, int linha )
+TabelaSimbolos *insereTabelaSimbolos( TabelaSimbolos *tb, char *nome, int linha, int id )
 {
 	TabelaSimbolos *novoElemento = (TabelaSimbolos *)malloc( sizeof(TabelaSimbolos) );
 	
@@ -261,6 +261,7 @@ TabelaSimbolos *insereTabelaSimbolos( TabelaSimbolos *tb, char *nome, int linha 
 
 	novoElemento->nome = copiaString( nome );
 	//printf("Nome %s\n", novoElemento->nome );
+	novoElemento->id = id;
 	novoElemento->linhas = NULL;
 	novoElemento->proximoPtr = NULL;
 	insereNovaLinha( novoElemento, linha );
