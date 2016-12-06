@@ -451,6 +451,7 @@ void run_bool_expr_node( TreeNode *ast )
 	filho = getFilho( ast, 1 );
 	if ( filho == NULL )
 		puts("Erro em bool expresion. O filho 1 é nulo" );
+	rec_run_ast( filho );
 }
 	
 
@@ -565,7 +566,30 @@ void run_neq_node( TreeNode *ast )
 		push( 0 );
 }
 	
-
+void run_if_node( TreeNode *ast )
+{
+	trace("if node");
+	TreeNode *filho;
+	filho = getFilho( ast, 0 );
+	if ( filho == NULL )
+		puts("Erro em filho node. Filho 0 é nulo");
+	rec_run_ast( filho );
+	int resposta = pop();
+	if ( resposta == 1 )
+	{
+		filho = getFilho( ast, 1 );
+		if ( filho == NULL )
+			puts("Erro em filho node. Filho 1 é nulo");
+		rec_run_ast( filho );
+	}
+	else
+	{
+		trace("Entrando dentro do bloco ELSE");
+		filho = getFilho( ast, 2 );
+		if ( filho != NULL )
+			rec_run_ast( filho );
+	}
+}
 
 
 void run_write_node( TreeNode *ast )
@@ -671,6 +695,7 @@ void rec_run_ast(TreeNode *ast) {
 				run_neq_node( ast );
 				break;
 			case IF_NODE:
+				run_if_node( ast );
 				break;
 			case WHILE_NODE:
 				break;
