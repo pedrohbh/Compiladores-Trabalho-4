@@ -613,7 +613,6 @@ void run_write_node( TreeNode *ast )
 			printf("\n");
 		else
 		{
-			//printf("String antes do index: %s\n", string );
 			string = strtok( string, "\\\n" );
 			printf("%s\n", string );
 		}
