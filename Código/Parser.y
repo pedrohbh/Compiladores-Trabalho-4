@@ -41,6 +41,7 @@ extern int yylineno;
 extern char *yytext;
 
 char *tokenSimbolo;
+char *stringTemp;
 int numeroTemp = 0;
 int contadorId = 0;
 
@@ -282,8 +283,11 @@ output_call: OUTPUT LPAREN arith_expr RPAREN
 write_call: WRITE LPAREN STRING RPAREN
 				{ 
 					$$ = novoNodo( WRITE_NODE );
-					//adicionaFilho( $$, 1, novoNodo( STRING_NODE ) );
+					adicionaFilho( $$, 1, novoNodo( STRING_NODE ) );
+					setNome( getFilho( $$, 0 ), stringTemp );
+					
 				};
+				
 
 user_func_call: ID { check_funcao( tabelaFuncao, tokenSimbolo ); } LPAREN opt_arg_list RPAREN
 					{						

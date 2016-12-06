@@ -49,6 +49,10 @@ TreeNode *novoNodo( NodeKind kind );
 
 NodeKind getKind( TreeNode *ast );
 
+void setNome( TreeNode *ast, char *nome );
+
+char *getNome( TreeNode *ast );
+
 int getData( TreeNode *ast );
 
 void setData( TreeNode *ast, int valor );

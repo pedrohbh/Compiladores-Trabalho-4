@@ -1,7 +1,9 @@
 #include <stdlib.h>
 #include <stdarg.h>
+#include <string.h>
 #include <stdio.h>
 #include "Arvore.h"
+#include "Tabelas.h"
 
 #define MAXCHILDREN 7
 
@@ -30,6 +32,21 @@ void setData( TreeNode *ast, int valor )
 int getData( TreeNode *ast )
 {
 	return ast->data;
+}
+
+void setNome( TreeNode *ast, char *nome )
+{
+	char *token = nome;
+	token = strtok( nome, "\"" );
+	
+	printf("String a ser copiada: %s\n", token );
+	ast->nome = copiaString( token );
+	printf("String copiada: %s\n", token );
+}
+
+char *getNome( TreeNode *ast )
+{
+	return ast->nome;
 }
 
 TreeNode *novoNodo( NodeKind kind )

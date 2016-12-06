@@ -11,6 +11,7 @@
 
 extern char *tokenSimbolo;
 extern char *tokenLiteral;
+extern char *stringTemp;
 extern int numeroTemp;
 
 void process_string();
@@ -64,7 +65,7 @@ whitespace [ \t]+
 "{" { return LBRACE; }
 "}" { return RBRACE; }
 "//"[^\n]* { /* FAZ NADA */ }
-"\""[^"\""]*"\"" { process_string(); return STRING; }
+"\""[^"\""]*"\"" { process_string(); stringTemp = yytext; return STRING; }
 {numero} { numeroTemp = atoi( yytext ); return NUM; }
 {identificador} {  int len = strlen( yytext ) + 1; tokenSimbolo = (char *)malloc(sizeof(char) * len); if ( tokenSimbolo == NULL ) { printf("Erro ao alocar tokenSimbolo\n"); exit( 1 ); } strcpy(tokenSimbolo, yytext ); /*printf("ID = %s   ---->  %s\n", yytext, tokenSimbolo );*/ return ID; }
 {newline} { yylineno++; }

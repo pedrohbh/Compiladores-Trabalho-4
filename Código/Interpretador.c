@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "Interpretador.h"
 
 // Data stack -----------------------------------------------------------------
@@ -331,6 +332,22 @@ void run_plus_node( TreeNode *ast )
 	push( c );
 }
 
+void run_write_node( TreeNode *ast )
+{
+	trace("write node");
+	char *string;
+	TreeNode *filho = getFilho( ast, 0 );
+	string = getNome( filho );
+	char *achador = strpbrk( string, "\\n" );
+	if ( achador != NULL )
+	{
+		string = strtok( string, "\\n" );
+		printf("%s\n", string );
+	}
+	else
+		printf("%s\n", string );
+}
+
 void rec_run_ast(TreeNode *ast) {
     switch( getKind(ast) ) 
 	{
@@ -360,6 +377,7 @@ void rec_run_ast(TreeNode *ast) {
 				run_output_node( ast );
             break;
         case WRITE_NODE:
+				run_write_node( ast );
             break;
         case ASSIGN_NODE:
 				run_assign_node( ast );
