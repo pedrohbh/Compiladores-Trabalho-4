@@ -56,6 +56,36 @@ void init_mem() {
 }
 
 // ----------------------------------------------------------------------------
+
+// Function memory ------------------------------------------------------------
+#define FUNC_SIZE 100
+
+TreeNode **functionMemory;
+
+void storeFunction( int addr, TreeNode *valor )
+{
+	functionMemory[ addr ] = valor;
+}
+
+TreeNode *loadFunction( int addr )
+{
+	return functionMemory[ addr ];
+}
+
+void init_memory_function()
+{
+	int i;
+	functionMemory = (TreeNode **)malloc(sizeof(TreeNode *) * FUNC_SIZE );
+	if ( functionMemory == NULL )
+	{
+		puts("Erro ao alocar mémoria para a memória de função. Memória Insufucuente.");
+		exit( 0 );
+	}
+	for ( i = 0; i < FUNC_SIZE; i++ )
+		functionMemory[ i ] = NULL;
+
+}
+// ----------------------------------------------------------------------------
 void rec_run_ast(TreeNode *ast);
 void run_func_decl_list( TreeNode *ast );
 

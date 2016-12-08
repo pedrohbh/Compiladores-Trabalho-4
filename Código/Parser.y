@@ -89,9 +89,6 @@ func_header: ret_type ID {
 				{
 					$$ = novoNodo( FUNC_HEADER_NODE );
 					adicionaFilho( $$, 2, $1, $5 );
-					//printf("Nome função: %s\n", tokenSimbolo );
-					//tabelaFuncao = novaFuncao( tabelaFuncao, tokenSimbolo );
-					//free( tokenSimbolo );
 				};
 
 func_body: LBRACE opt_var_decl opt_stmt_list RBRACE
@@ -127,7 +124,7 @@ param_list: param_list COMMA param
 
 param: INT ID
 		{
-			$$ = novoNodo( INTEGER_NODE );
+			$$ = novoNodo( SVAL_NODE );
 			tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId );
 			setData( $$, contadorId++ );
 			//printf("VAR: %s\n", tokenSimbolo );
@@ -136,7 +133,7 @@ param: INT ID
 		}
 		| INT ID LBRACK RBRACK
 		{
-			$$ = novoNodo( INTEGER_NODE );
+			$$ = novoNodo( CVAL_NODE );
 			tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId++ );
 			//free( tokenSimbolo );
 		};
