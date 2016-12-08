@@ -35,7 +35,7 @@ int debug = 0;
 TabelaSimbolos *newVar( TabelaSimbolos *tb,  char *nome, int id, int escopo );
 int check_var(TabelaSimbolos *tb, char *nome );
 
-TabelaFuncao *novaFuncao( TabelaFuncao *tb,  char *nome, int id );
+TabelaFuncao *novaFuncao( TabelaFuncao *tb,  char *nome, int id, int aridade );
 int check_funcao( TabelaFuncao *tb, char *nome );
 
 extern int yylineno;
@@ -47,6 +47,7 @@ char *tokenSimbolo;
 char *stringTemp;
 
 int escopoGlobal = 0;
+int aridadeFuncao = 0;
 
 int numeroTemp = 0;
 int contadorId = 0;
@@ -93,19 +94,23 @@ func_decl: func_header func_body
 				};
 
 func_header: ret_type ID {
-					tabelaFuncao = novaFuncao( tabelaFuncao, tokenSimbolo, contadorFuncaoId ); nomeFuncao = tokenSimbolo; } LPAREN params RPAREN
+					tabelaFuncao = novaFuncao( tabelaFuncao, tokenSimbolo, contadorFuncaoId, aridadeFuncao ); nomeFuncao = tokenSimbolo; } LPAREN params RPAREN
 				{
 					$$ = novoNodo( FUNC_HEADER_NODE );
 					adicionaFilho( $$, 2, $1, $5 );
 					setData( $$, contadorFuncaoId++ );
 					setNome( $$,  nomeFuncao );
+					
+					aridadeFuncao = 0;
 				};
 
 func_body: LBRACE opt_var_decl opt_stmt_list RBRACE
 				{
+					//printf("Aridade função: %d\n", aridadeFuncao);
 					$$ = novoNodo( FUNC_BODY_NODE );
 					adicionaFilho( $$, 2, $2, $3 );
 					escopoGlobal++;
+					//aridadeFuncao = 0;
 				};
 
 opt_var_decl: /* VAZIO */ { $$ = novoNodo( OPT_VAR_DECL ); } | var_decl_list { $$ = $1; };
@@ -130,8 +135,10 @@ param_list: param_list COMMA param
 				}
 				| param
 				{
+					//puts("Cheguei Aqui");
 					$$ = novoNodo( PARAM_LIST_NODE );
 					adicionaFilho( $$, 1, $1 );
+					aridadeFuncao++;
 					//$$ = $1;
 				};
 
@@ -229,13 +236,13 @@ lval: ID
 			$$ = novoNodo( CVAL_NODE );
 			setData( $$, id );
 			adicionaFilho( $$, 1, novoNodo( NUMBER_NODE ) );
-			printf("Valor do número da varíavel composto é: %d\n", numeroTemp );
+			//printf("Valor do número da varíavel composto é: %d\n", numeroTemp );
 			setData( getFilho( $$, 0 ), numeroTemp );
 		}
 		| ID LBRACK ID RBRACK
 		{
 			check_var( tabelaSimbolos, tokenSimbolo );
-			printf("Nome da variável em CVAL2: %s\n", tokenSimbolo );
+			//printf("Nome da variável em CVAL2: %s\n", tokenSimbolo );
 			$$ = novoNodo( CVAL_NODE );
 			
 			//free( tokenSimbolo );
@@ -308,11 +315,14 @@ write_call: WRITE LPAREN STRING RPAREN
 				
 
 user_func_call: ID { idF = check_funcao( tabelaFuncao, tokenSimbolo ); } LPAREN opt_arg_list RPAREN
-					{						
+					{
+						//printf("Aridade Funcao em Fucntion Call: %d\n", aridadeFuncao );
+												
 						//$$ = $3;	
 						$$ = novoNodo( FUNC_CALL_NODE );
 						adicionaFilho( $$, 1, $4 );
 						setData( $$, idF );
+						aridadeFuncao = 0;
 						//free( tokenSimbolo );
 					};
 
@@ -325,6 +335,7 @@ arg_list: arg_list COMMA arith_expr
 			}
 			| arith_expr
 			{
+				aridadeFuncao++;
 				$$ = $1;
 			};
 
@@ -400,7 +411,7 @@ arith_expr: arith_expr PLUS arith_expr
 
 %%
 
-TabelaFuncao *novaFuncao( TabelaFuncao *tb,  char *nome, int id )
+TabelaFuncao *novaFuncao( TabelaFuncao *tb,  char *nome, int id, int aridade )
 {
 	//printf("Nome: %s\n", nome );
 	int idx = buscaTabelaFuncao( tb, nome );
@@ -412,6 +423,7 @@ TabelaFuncao *novaFuncao( TabelaFuncao *tb,  char *nome, int id )
 	}
 
 	tb = insereTabelaFuncao( tb, nome,  yylineno, id );
+	setAridadeFuncao( tb, nome, aridade );
 
 	return tb;
 
@@ -425,6 +437,12 @@ int check_funcao(TabelaFuncao *tb, char *nome )
         printf("SEMANTIC ERROR (%d): function '%s' was not declared.\n", yylineno, nome);
         exit(1);
     }
+
+	if ( getAridadeFuncao( tb, nome ) != aridadeFuncao )
+	{
+		printf("SEMANTIC ERROR (%d): function ’%s’ was called with %d arguments but declared with %d parameters.\n", yylineno, nome, aridadeFuncao, getAridadeFuncao( tb, nome ) );
+		exit( 0 );
+	}
 
 	TabelaFuncao *it = getNodoFuncao( tb, nome );
 	insereNovaLinhaFuncao( it, yylineno );

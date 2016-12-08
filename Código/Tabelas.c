@@ -62,9 +62,28 @@ struct tabelaFuncao
 {
 	char *nome;
 	int id;
+	int aridade;
 	LinhaLista *linhas;
 	struct tabelaFuncao *proximoPtr;
 };
+
+void setAridadeFuncao( TabelaFuncao *tb, char *nome, int aridade )
+{
+	TabelaFuncao *it;
+	for ( it = tb; it != NULL; it = it->proximoPtr )
+		if ( strcmp( it->nome, nome ) == 0 )
+			it->aridade = aridade;
+}
+
+int getAridadeFuncao( TabelaFuncao *tb, char *nome )
+{
+	TabelaFuncao *it;
+	for ( it = tb; it != NULL; it = it->proximoPtr )
+		if ( strcmp( it->nome, nome ) == 0 )
+			return it->aridade;
+
+	return -2;
+}
 
 int getIDTabelaFuncao( TabelaFuncao *tb )
 {
