@@ -33,8 +33,8 @@ LitTable *lt;
 TabelaSimbolos *newVar( TabelaSimbolos *tb,  char *nome, int id );
 int check_var(TabelaSimbolos *tb, char *nome );
 
-TabelaFuncao *novaFuncao( TabelaFuncao *tb,  char *nome );
-void check_funcao( TabelaFuncao *tb, char *nome );
+TabelaFuncao *novaFuncao( TabelaFuncao *tb,  char *nome, int id );
+int check_funcao( TabelaFuncao *tb, char *nome );
 
 extern int yylineno;
 
@@ -44,7 +44,8 @@ char *tokenSimbolo;
 char *stringTemp;
 int numeroTemp = 0;
 int contadorId = 0;
-
+int contadorFuncaoId = 0;
+int idF;
 TabelaSimbolos *tabelaSimbolos = NULL;
 TabelaFuncao *tabelaFuncao = NULL;
 TabelaSimbolos *auxiliarSimbolos;
@@ -85,10 +86,11 @@ func_decl: func_header func_body
 				};
 
 func_header: ret_type ID {
-					tabelaFuncao = novaFuncao( tabelaFuncao, tokenSimbolo ); } LPAREN params RPAREN
+					tabelaFuncao = novaFuncao( tabelaFuncao, tokenSimbolo, contadorFuncaoId ); } LPAREN params RPAREN
 				{
 					$$ = novoNodo( FUNC_HEADER_NODE );
 					adicionaFilho( $$, 2, $1, $5 );
+					setData( $$, contadorFuncaoId++ );
 				};
 
 func_body: LBRACE opt_var_decl opt_stmt_list RBRACE
@@ -290,11 +292,12 @@ write_call: WRITE LPAREN STRING RPAREN
 				};
 				
 
-user_func_call: ID { check_funcao( tabelaFuncao, tokenSimbolo ); } LPAREN opt_arg_list RPAREN
+user_func_call: ID { idF = check_funcao( tabelaFuncao, tokenSimbolo ); } LPAREN opt_arg_list RPAREN
 					{						
 						//$$ = $3;	
 						$$ = novoNodo( FUNC_CALL_NODE );
 						adicionaFilho( $$, 1, $4 );
+						setData( $$, idF );
 						//free( tokenSimbolo );
 					};
 
@@ -382,7 +385,7 @@ arith_expr: arith_expr PLUS arith_expr
 
 %%
 
-TabelaFuncao *novaFuncao( TabelaFuncao *tb,  char *nome )
+TabelaFuncao *novaFuncao( TabelaFuncao *tb,  char *nome, int id )
 {
 	//printf("Nome: %s\n", nome );
 	int idx = buscaTabelaFuncao( tb, nome );
@@ -393,13 +396,13 @@ TabelaFuncao *novaFuncao( TabelaFuncao *tb,  char *nome )
 		exit( 1 );
 	}
 
-	tb = insereTabelaFuncao( tb, nome,  yylineno );
+	tb = insereTabelaFuncao( tb, nome,  yylineno, id );
 
 	return tb;
 
 }
 
-void check_funcao(TabelaFuncao *tb, char *nome ) 
+int check_funcao(TabelaFuncao *tb, char *nome ) 
 {
     int idx = buscaTabelaFuncao( tb, nome );
 
@@ -410,6 +413,7 @@ void check_funcao(TabelaFuncao *tb, char *nome )
 
 	TabelaFuncao *it = getNodoFuncao( tb, nome );
 	insereNovaLinhaFuncao( it, yylineno );
+	return idx;
 
 	
 }

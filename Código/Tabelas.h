@@ -32,7 +32,7 @@ int getPrimeiraLinhaFuncao( TabelaFuncao *tb, char *nome );
 
 void insereNovaLinhaFuncao( TabelaFuncao *nodo, int linha );
 
-TabelaFuncao *insereTabelaFuncao( TabelaFuncao *tb, char *nome, int linha );
+TabelaFuncao *insereTabelaFuncao( TabelaFuncao *tb, char *nome, int linha, int id );
 
 //--------------------------------------Simbolos---------------------------------------------
 int buscaTabelaSimbolos( TabelaSimbolos *tb, char *nome );

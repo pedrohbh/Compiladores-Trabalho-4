@@ -83,7 +83,6 @@ void init_memory_function()
 	}
 	for ( i = 0; i < FUNC_SIZE; i++ )
 		functionMemory[ i ] = NULL;
-
 }
 // ----------------------------------------------------------------------------
 void rec_run_ast(TreeNode *ast);
@@ -92,6 +91,7 @@ void run_func_decl_list( TreeNode *ast );
 void run_ast(TreeNode *ast) {
     init_stack();
     init_mem();
+	init_memory_function();
     rec_run_ast(ast);
 }
 

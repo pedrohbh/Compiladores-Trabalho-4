@@ -148,10 +148,10 @@ void node2str(TreeNode *node, char *s)
 		case VAR_DECL_LIST_NODE: sprintf( s, "%s", "Var Decl List" ); break;
 		case PARAM_LIST_NODE: sprintf( s, "%s", "Param List" ); break;
 		case FUNC_BODY_NODE: sprintf( s, "%s", "Func Body" ); break;
-		case FUNC_HEADER_NODE: sprintf( s, "%s", "Func Header" ); break;
+		case FUNC_HEADER_NODE: sprintf( s, "%s, %d", "Func Header", getData( node ) ); break;
 		case FUNC_DECL_NODE: sprintf( s, "%s", "Func Decl" ); break;
 		case FUNC_DECL_LIST: sprintf( s, "%s", "Func Decl List" ); break;
-		case FUNC_CALL_NODE: sprintf( s, "%s", "Func Call" ); break;
+		case FUNC_CALL_NODE: sprintf( s, "%s, %d", "Func Call", getData( node ) ); break;
 		case INTEGER_VECTOR_NODE: sprintf( s, "%s", "Integer Vector Node" ); break;
 		case WHILE_NODE: sprintf( s, "%s", "While Node" ); break;
 		case OPT_STMT_LIST: sprintf( s, "%s", "Opt Stmt List" ); break;

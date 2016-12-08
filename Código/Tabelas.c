@@ -59,9 +59,15 @@ void free_lit_table(LitTable* lt) {
 struct tabelaFuncao
 {
 	char *nome;
+	int id;
 	LinhaLista *linhas;
 	struct tabelaFuncao *proximoPtr;
 };
+
+int getIDTabelaFuncao( TabelaFuncao *tb )
+{
+	return tb->id;
+}
 
 int buscaTabelaFuncao( TabelaFuncao *tb, char *nome )
 {
@@ -70,7 +76,7 @@ int buscaTabelaFuncao( TabelaFuncao *tb, char *nome )
 	for ( it = tb; it != NULL; it = it->proximoPtr )
 	{
 		if ( strcmp( nome, it->nome ) == 0 )
-			return i;
+			return it->id;
 
 		i++;
 	}
@@ -133,7 +139,7 @@ void insereNovaLinhaFuncao( TabelaFuncao *nodo, int linha )
 }		
 			
 
-TabelaFuncao *insereTabelaFuncao( TabelaFuncao *tb, char *nome, int linha )
+TabelaFuncao *insereTabelaFuncao( TabelaFuncao *tb, char *nome, int linha, int id )
 {
 	TabelaFuncao *novoElemento = (TabelaFuncao *)malloc( sizeof(TabelaFuncao) );
 	
@@ -147,6 +153,7 @@ TabelaFuncao *insereTabelaFuncao( TabelaFuncao *tb, char *nome, int linha )
 	//printf("Nome %s\n", novoElemento->nome );
 	novoElemento->linhas = NULL;
 	novoElemento->proximoPtr = NULL;
+	novoElemento->id = id;
 	insereNovaLinhaFuncao( novoElemento, linha );
 
 
