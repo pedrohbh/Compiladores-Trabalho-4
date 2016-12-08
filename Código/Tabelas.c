@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include "Tabelas.h"
 
+extern int escopoGlobal;
+
 #define SYMBOL_MAX_SIZE 128
 
 struct linhaLista
@@ -180,6 +182,7 @@ TabelaFuncao *insereTabelaFuncao( TabelaFuncao *tb, char *nome, int linha, int i
 struct tabelaSimbolos
 {
 	char *nome;
+	int escopo;
 	int id;
 	LinhaLista *linhas;
 	struct tabelaSimbolos *proximoPtr;
@@ -193,7 +196,12 @@ int buscaTabelaSimbolos( TabelaSimbolos *tb, char *nome )
 	for ( it = tb; it != NULL; it = it->proximoPtr )
 	{
 		if ( strcmp( nome, it->nome ) == 0 )
-			return it->id;
+		{
+			if ( it->escopo == escopoGlobal )
+				return it->id;
+			else
+				return -1;
+		}
 
 		i++;
 	}
@@ -219,7 +227,10 @@ int getPrimeiraLinhaSimbolo( TabelaSimbolos *tb, char *nome )
 	for ( it = tb; it != NULL; it = it->proximoPtr )
 	{
 		if ( strcmp( nome, it->nome ) == 0 )
-			return it->linhas->linha;
+		{
+				return it->linhas->linha;
+
+		}
 	}
 	return -1;
 }
@@ -256,7 +267,7 @@ void insereNovaLinha( TabelaSimbolos *nodo, int linha )
 }		
 			
 
-TabelaSimbolos *insereTabelaSimbolos( TabelaSimbolos *tb, char *nome, int linha, int id )
+TabelaSimbolos *insereTabelaSimbolos( TabelaSimbolos *tb, char *nome, int linha, int id, int escopo )
 {
 	TabelaSimbolos *novoElemento = (TabelaSimbolos *)malloc( sizeof(TabelaSimbolos) );
 	
@@ -271,6 +282,7 @@ TabelaSimbolos *insereTabelaSimbolos( TabelaSimbolos *tb, char *nome, int linha,
 	novoElemento->id = id;
 	novoElemento->linhas = NULL;
 	novoElemento->proximoPtr = NULL;
+	novoElemento->escopo = escopo;
 	insereNovaLinha( novoElemento, linha );
 
 
