@@ -40,6 +40,7 @@ extern int yylineno;
 
 extern char *yytext;
 
+char *nomeFuncao;
 char *tokenSimbolo;
 char *stringTemp;
 int numeroTemp = 0;
@@ -86,11 +87,12 @@ func_decl: func_header func_body
 				};
 
 func_header: ret_type ID {
-					tabelaFuncao = novaFuncao( tabelaFuncao, tokenSimbolo, contadorFuncaoId ); } LPAREN params RPAREN
+					tabelaFuncao = novaFuncao( tabelaFuncao, tokenSimbolo, contadorFuncaoId ); nomeFuncao = tokenSimbolo; } LPAREN params RPAREN
 				{
 					$$ = novoNodo( FUNC_HEADER_NODE );
 					adicionaFilho( $$, 2, $1, $5 );
 					setData( $$, contadorFuncaoId++ );
+					setNome( $$,  nomeFuncao );
 				};
 
 func_body: LBRACE opt_var_decl opt_stmt_list RBRACE
@@ -464,11 +466,11 @@ int main()
 	if ( resultado == 0 )
 	{
 		//puts("Opa");
-		//stdin = fopen(ctermid(NULL), "r");
-      //run_ast(arvore);
+		stdin = fopen(ctermid(NULL), "r");
+      run_ast(arvore);
 		//printf("PARSE SUCESSFUL!\n");
 		//imprimeTabelaSimbolos( tabelaSimbolos );
-		print_dot( arvore );
+		//print_dot( arvore );
 	}
 
 	return 0;

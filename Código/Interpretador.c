@@ -143,7 +143,15 @@ void run_func_decl_node( TreeNode *ast )
 		if ( filho == NULL )
 			continue;
 		else
-			rec_run_ast( filho );
+		{
+			if (  ( getNome( filho ) != NULL ) )
+			{
+				if ( strcmp( getNome( filho ), "main" ) == 0 )
+					rec_run_ast( filho );
+			}
+			else
+				rec_run_ast( filho );
+		}
 	}
 }
 
@@ -152,6 +160,7 @@ void run_func_header_node( TreeNode *ast )
 	int i;
 	TreeNode *filho;
 	trace("func_header_node");
+	storeFunction( getData( ast ), ast );
 	for ( i = 0; i < 7; i++ )
 	{
 		filho = getFilho( ast, i );
