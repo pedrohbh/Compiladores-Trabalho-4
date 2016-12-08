@@ -774,6 +774,8 @@ void rec_run_ast(TreeNode *ast) {
 				break;
 			case OPT_VAR_DECL:
 				break;
+			case OPT_ARG_LIST:
+				break;
         //default:
             //fprintf(stderr, "Invalid kind: %s!\n", kind2str(get_kind(ast)));
             //exit(1);

@@ -123,7 +123,9 @@ param_list: param_list COMMA param
 				}
 				| param
 				{
-					$$ = $1;
+					$$ = novoNodo( PARAM_LIST_NODE );
+					adicionaFilho( $$, 1, $1 );
+					//$$ = $1;
 				};
 
 param: INT ID
@@ -303,7 +305,7 @@ user_func_call: ID { idF = check_funcao( tabelaFuncao, tokenSimbolo ); } LPAREN 
 						//free( tokenSimbolo );
 					};
 
-opt_arg_list: /* VAZIO */ | arg_list { $$ = $1; };
+opt_arg_list: /* VAZIO */ { $$ = novoNodo( OPT_ARG_LIST ); } | arg_list { $$ = $1; };
 
 arg_list: arg_list COMMA arith_expr 
 			{

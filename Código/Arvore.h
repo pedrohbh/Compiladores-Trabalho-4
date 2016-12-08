@@ -43,7 +43,8 @@ typedef enum
 	FUNC_DECL_LIST,
 	FUNC_CALL_NODE,
 	OPT_STMT_LIST,
-	OPT_VAR_DECL
+	OPT_VAR_DECL,
+	OPT_ARG_LIST
 } NodeKind;
 
 TreeNode *novoNodo( NodeKind kind );
