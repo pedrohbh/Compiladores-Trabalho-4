@@ -41,7 +41,7 @@ void insereNovaLinha( TabelaSimbolos *nodo, int linha );
 
 int getPrimeiraLinhaSimbolo( TabelaSimbolos *tb, char *nome );
 
-TabelaSimbolos *insereTabelaSimbolos( TabelaSimbolos *tb, char *nome, int linha, int id );
+TabelaSimbolos *insereTabelaSimbolos( TabelaSimbolos *tb, char *nome, int linha, int id, int escopo );
 
 TabelaSimbolos *getNodo( TabelaSimbolos *tb, char *nome );
 

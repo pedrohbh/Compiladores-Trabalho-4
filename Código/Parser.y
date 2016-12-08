@@ -30,7 +30,7 @@ void yyerror(char const *s);
 LitTable *lt;
 
 
-TabelaSimbolos *newVar( TabelaSimbolos *tb,  char *nome, int id );
+TabelaSimbolos *newVar( TabelaSimbolos *tb,  char *nome, int id, int escopo );
 int check_var(TabelaSimbolos *tb, char *nome );
 
 TabelaFuncao *novaFuncao( TabelaFuncao *tb,  char *nome, int id );
@@ -43,10 +43,14 @@ extern char *yytext;
 char *nomeFuncao;
 char *tokenSimbolo;
 char *stringTemp;
+
+int escopoGlobal = 0;
+
 int numeroTemp = 0;
 int contadorId = 0;
 int contadorFuncaoId = 0;
 int idF;
+
 TabelaSimbolos *tabelaSimbolos = NULL;
 TabelaFuncao *tabelaFuncao = NULL;
 TabelaSimbolos *auxiliarSimbolos;
@@ -97,6 +101,7 @@ func_header: ret_type ID {
 
 func_body: LBRACE opt_var_decl opt_stmt_list RBRACE
 				{
+					escopoGlobal++;
 					$$ = novoNodo( FUNC_BODY_NODE );
 					adicionaFilho( $$, 2, $2, $3 );
 				};
@@ -131,7 +136,7 @@ param_list: param_list COMMA param
 param: INT ID
 		{
 			$$ = novoNodo( SVAL_NODE );
-			tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId );
+			tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId, escopoGlobal );
 			setData( $$, contadorId++ );
 			//printf("VAR: %s\n", tokenSimbolo );
 			//free( tokenSimbolo );
@@ -140,7 +145,7 @@ param: INT ID
 		| INT ID LBRACK RBRACK
 		{
 			$$ = novoNodo( CVAL_NODE );
-			tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId++ );
+			tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId++, escopoGlobal );
 			//free( tokenSimbolo );
 		};
 
@@ -154,12 +159,12 @@ var_decl_list: var_decl_list var_decl
 						$$ = $1;
 					};
 
-var_decl: INT ID { tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId ); } SEMI
+var_decl: INT ID { tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId, escopoGlobal ); } SEMI
 			{
 				$$ = novoNodo( SVAL_NODE );
 				setData( $$, contadorId++ );									
 			}
-			| INT ID { tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId ); } LBRACK NUM RBRACK SEMI
+			| INT ID { tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId, escopoGlobal ); } LBRACK NUM RBRACK SEMI
 			{
 				$$ = novoNodo( CVAL_NODE );
 				setData( $$, contadorId++ );
@@ -423,7 +428,7 @@ int check_funcao(TabelaFuncao *tb, char *nome )
 }
 
 
-TabelaSimbolos *newVar( TabelaSimbolos *tb,  char *nome, int id )
+TabelaSimbolos *newVar( TabelaSimbolos *tb,  char *nome, int id, int escopo )
 {
 	int idx = buscaTabelaSimbolos( tb, nome );
 	
@@ -433,7 +438,7 @@ TabelaSimbolos *newVar( TabelaSimbolos *tb,  char *nome, int id )
 		exit( 1 );
 	}
 
-	tb = insereTabelaSimbolos( tb, nome,  yylineno, id );
+	tb = insereTabelaSimbolos( tb, nome,  yylineno, id, escopo );
 
 	return tb;
 
@@ -467,6 +472,7 @@ int main()
 	//printf("Resultado: %d\n", resultado);
 	if ( resultado == 0 )
 	{
+		//puts("PARSER SUCESSUFUL");
 		//puts("Opa");
 		stdin = fopen(ctermid(NULL), "r");
       run_ast(arvore);
