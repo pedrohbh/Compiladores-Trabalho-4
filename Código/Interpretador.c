@@ -61,6 +61,7 @@ void init_mem() {
 #define FUNC_SIZE 100
 
 TreeNode **functionMemory;
+int flagExecutaFuncao = 0; // Flag que diz se a função deve ser executada ou não
 
 void storeFunction( int addr, TreeNode *valor )
 {
@@ -147,14 +148,24 @@ void run_func_decl_node( TreeNode *ast )
 			if (  ( getNome( filho ) != NULL ) )
 			{
 				if ( strcmp( getNome( filho ), "main" ) == 0 )
+				{
+					flagExecutaFuncao = 1;
 					rec_run_ast( filho );
+				}
+				else if ( flagExecutaFuncao == 1 )
+				{
+					rec_run_ast( filho );
+				}
 				else
 				{
 					storeFunction( getData( filho ), ast );
 				}
 			}
-			else
+			else if ( flagExecutaFuncao == 1 )
+			{
 				rec_run_ast( filho );
+				flagExecutaFuncao = 0;
+			}
 		}
 	}
 }
@@ -707,8 +718,87 @@ void run_while_node( TreeNode *ast )
 	}
 	
 }
-	
-	
+
+void run_param_list_node( TreeNode *ast )
+{
+	trace("param list node");
+	int i;
+	TreeNode *filho;
+	for ( i = 0; i < 7; i++ )
+	{
+		filho = getFilho( ast, i );
+		if ( filho == NULL )
+			continue;
+		else
+			rec_run_ast( filho );
+	}
+}
+
+void run_return_node( TreeNode *ast )
+{
+	trace("Return node");
+	int i;
+	TreeNode *filho;
+	for ( i = 0; i < 7; i++ )
+	{
+		filho = getFilho( ast, i );
+		if ( filho == NULL )
+			continue;
+		else
+			rec_run_ast( filho );
+	}
+}
+
+void run_func_call_node( TreeNode *ast )
+{
+	trace("Func Call Node");
+	int i;
+	TreeNode *filho;
+	for ( i = 0; i < 7; i++ )
+	{
+		filho = getFilho( ast, i );
+		if ( filho == NULL )
+			continue;
+		else
+			rec_run_ast( filho );
+	}
+	flagExecutaFuncao = 1;
+	TreeNode *func = loadFunction( getData( ast ) );
+	if ( func == NULL )
+		puts("Erro na func call node. A função pegada por load é NULL");
+	rec_run_ast( func );
+}
+
+void run_arg_list_node( TreeNode *ast )
+{
+	trace("Arg List");
+	int i;
+	TreeNode *filho;
+	for ( i = 0; i < 7; i++ )
+	{
+		filho = getFilho( ast, i );
+		if ( filho == NULL )
+			continue;
+		else
+			rec_run_ast( filho );
+	}
+}	
+
+void run_func_decl_list_node( TreeNode *ast )
+{
+	trace("Func decl list");
+	int i;
+	TreeNode *filho;
+	for ( i = 0; i < 7; i++ )
+	{
+		filho = getFilho( ast, i );
+		if ( filho == NULL )
+			continue;
+		else
+			rec_run_ast( filho );
+	}
+}
+
 
 void rec_run_ast(TreeNode *ast) {
     switch( getKind(ast) ) 
@@ -720,6 +810,7 @@ void rec_run_ast(TreeNode *ast) {
 				//run_cval_node( ast );
 				break;
         case FUNC_DECL_LIST:
+				run_func_decl_list_node( ast );
             break;
         case FUNC_DECL_NODE:
             run_func_decl_node( ast );
@@ -728,6 +819,7 @@ void rec_run_ast(TreeNode *ast) {
             run_func_header_node( ast );
             break;
         case PARAM_LIST_NODE:
+				run_param_list_node( ast );
             break;
         case VAR_DECL_LIST_NODE:
             break;
@@ -795,14 +887,17 @@ void rec_run_ast(TreeNode *ast) {
 				run_while_node( ast );
 				break;
 			case FUNC_CALL_NODE:
+				run_func_call_node( ast );
 				break;
 			case ARG_LIST_NODE:
+				run_arg_list_node( ast );
 				break;
 			case VOID_NODE:
 				break;
 			case STRING_NODE:
 				break;
 			case RETURN_NODE:
+				run_return_node( ast );
 				break;
 			case BOOL_EXPR_NODE:
 				run_bool_expr_node( ast );
