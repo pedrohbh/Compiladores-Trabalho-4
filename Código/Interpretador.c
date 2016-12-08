@@ -148,6 +148,10 @@ void run_func_decl_node( TreeNode *ast )
 			{
 				if ( strcmp( getNome( filho ), "main" ) == 0 )
 					rec_run_ast( filho );
+				else
+				{
+					storeFunction( getData( filho ), ast );
+				}
 			}
 			else
 				rec_run_ast( filho );
@@ -159,8 +163,7 @@ void run_func_header_node( TreeNode *ast )
 {
 	int i;
 	TreeNode *filho;
-	trace("func_header_node");
-	storeFunction( getData( ast ), ast );
+	trace("func_header_node");	
 	for ( i = 0; i < 7; i++ )
 	{
 		filho = getFilho( ast, i );
