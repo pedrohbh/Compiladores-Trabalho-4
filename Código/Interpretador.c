@@ -593,7 +593,13 @@ void run_param_list_node( TreeNode *ast )
 			continue;
 		else
 		{
-			store( getData( filho ), pop() );
+			if ( getKind( filho ) == PARAM_LIST_NODE )
+			{
+				puts("É PARAM LIST");
+				rec_run_ast( filho );
+			}
+			else
+				store( getData( filho ), pop() );
 			//rec_run_ast( filho );
 		}
 	}
