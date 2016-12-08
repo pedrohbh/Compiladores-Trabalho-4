@@ -102,37 +102,6 @@ void trace( char *s )
 	printf("Trace: %s\n", s );
 }
 
-/*void run_func_decl_list( TreeNode *ast )
-{
-	int i;
-	TreeNode *filho;
-	trace("func_decl_list");
-	for ( i = 0; i < 7; i++ )
-	{
-		filho = getFilho( ast, i );
-		if ( filho == NULL )
-			continue;
-		else
-			rec_run_ast( filho );
-	}
-}
-
-
-void run_func_decl_list( TreeNode *ast )
-{
-	int i;
-	TreeNode *filho;
-	trace("func_decl_list");
-	for ( i = 0; i < 7; i++ )
-	{
-		filho = getFilho( ast, i );
-		if ( filho == NULL )
-			continue;
-		else
-			rec_run_ast( filho );
-	}
-}*/
-
 void run_func_decl_node( TreeNode *ast )
 {
 	int i;
@@ -199,113 +168,6 @@ void run_func_body_node( TreeNode *ast )
 			rec_run_ast( filho );
 	}
 }
-
-/*void run_stmt_seq(AST *ast) {
-    trace("stmt_seq");
-    int size = get_child_count(ast);
-    for (int i = 0; i < size; i++) {
-        rec_run_ast(get_child(ast, i));
-    }
-}
-
-void run_if(AST *ast) {
-    trace("if");
-    rec_run_ast(get_child(ast, 0));
-    int test = pop();
-    if (test == 1) {
-        rec_run_ast(get_child(ast, 1));
-    } else if (test == 0 && get_child_count(ast) == 3) {
-        rec_run_ast(get_child(ast, 2));
-    }
-}
-
-void run_repeat(AST *ast) {
-    trace("repeat");
-    int again = 1;
-    while (again) {
-        rec_run_ast(get_child(ast, 0)); // Run body.
-        rec_run_ast(get_child(ast, 1)); // Run test.
-        again = !pop();
-    }
-}
-
-void run_assign(AST *ast) {
-    trace("assign");
-    rec_run_ast(get_child(ast, 1));
-    AST *child = get_child(ast, 0);
-    int var_idx = get_data(child);
-    store(var_idx, pop());
-}
-
-void run_read(AST *ast) {
-    trace("read");
-    int x;
-    printf("read: ");
-    scanf("%d", &x);
-    AST *child = get_child(ast, 0);
-    int var_idx = get_data(child);
-    store(var_idx, x);
-}
-
-void run_write(AST *ast) {
-    trace("write");
-    rec_run_ast(get_child(ast, 0));
-    int x = pop();
-    printf("write: %d\n", x);
-}
-
-#define bin_op() \
-    rec_run_ast(get_child(ast, 0)); \
-    rec_run_ast(get_child(ast, 1)); \
-    int r = pop(); \
-    int l = pop()
-
-void run_plus(AST *ast) {
-    trace("plus");
-    bin_op();
-    push(l + r);
-}
-
-void run_minus(AST *ast) {
-    trace("minus");
-    bin_op();
-    push(l - r);
-}
-
-void run_times(AST *ast) {
-    trace("times");
-    bin_op();
-    push(l * r);
-}
-
-void run_over(AST *ast) {
-    trace("over");
-    bin_op();
-    push((int) l / r);
-}
-
-void run_lt(AST *ast) {
-    trace("lt");
-    bin_op();
-    push(l < r);
-}
-
-void run_eq(AST *ast) {
-    trace("eq");
-    bin_op();
-    push(l == r);
-}
-
-void run_num(AST *ast) {
-    trace("num");
-    push(get_data(ast));
-}
-
-void run_id(AST *ast) {
-    trace("id");
-    int var_idx = get_data(ast);
-    push(load(var_idx));
-}*/
 
 void run_sval_node( TreeNode *ast )
 {
@@ -724,13 +586,16 @@ void run_param_list_node( TreeNode *ast )
 	trace("param list node");
 	int i;
 	TreeNode *filho;
-	for ( i = 0; i < 7; i++ )
+	for ( i = 6; i >= 0; i-- )
 	{
 		filho = getFilho( ast, i );
 		if ( filho == NULL )
 			continue;
 		else
-			rec_run_ast( filho );
+		{
+			store( getData( filho ), pop() );
+			//rec_run_ast( filho );
+		}
 	}
 }
 
