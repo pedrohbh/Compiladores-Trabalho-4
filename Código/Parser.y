@@ -29,6 +29,8 @@ void yyerror(char const *s);
 
 LitTable *lt;
 
+int debug = 0;
+
 
 TabelaSimbolos *newVar( TabelaSimbolos *tb,  char *nome, int id, int escopo );
 int check_var(TabelaSimbolos *tb, char *nome );
@@ -145,7 +147,8 @@ param: INT ID
 		| INT ID LBRACK RBRACK
 		{
 			$$ = novoNodo( CVAL_NODE );
-			tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId++, escopoGlobal );
+			tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId, escopoGlobal );
+			setData( $$, contadorId++ );
 			//free( tokenSimbolo );
 		};
 
@@ -170,7 +173,7 @@ var_decl: INT ID { tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contad
 				setData( $$, contadorId++ );
 				adicionaFilho( $$, 1, novoNodo( NUMBER_NODE ) );
 				setData( getFilho( $$, 0 ), numeroTemp );
-				printf("O valor do número em CVAL é %d\n", numeroTemp );
+				//printf("O valor do número em CVAL é %d\n", numeroTemp );
 				
 			};
 
@@ -232,6 +235,9 @@ lval: ID
 		| ID LBRACK ID RBRACK
 		{
 			check_var( tabelaSimbolos, tokenSimbolo );
+			printf("Nome da variável em CVAL2: %s\n", tokenSimbolo );
+			$$ = novoNodo( CVAL_NODE );
+			
 			//free( tokenSimbolo );
 		};
 
@@ -388,7 +394,7 @@ arith_expr: arith_expr PLUS arith_expr
 				{
 					$$ = $1;
 				}
-				| NUM { $$ = novoNodo( NUMBER_NODE ); printf( "O valor de número é %d\n", numeroTemp ); setData( $$, numeroTemp ); };
+				| NUM { $$ = novoNodo( NUMBER_NODE ); /*printf( "O valor de número é %d\n", numeroTemp );*/ setData( $$, numeroTemp ); };
 							
 				
 
@@ -466,17 +472,14 @@ void yyerror( char const *s )
 
 int main()
 {
-	//puts("oi");
+	//debug = 1;
 	lt = create_lit_table();
 	int resultado = yyparse();
-	//printf("Resultado: %d\n", resultado);
+
 	if ( resultado == 0 )
 	{
-		//puts("Opa");
 		stdin = fopen(ctermid(NULL), "r");
       run_ast(arvore);
-		//printf("PARSE SUCESSFUL!\n");
-		//imprimeTabelaSimbolos( tabelaSimbolos );
 		//print_dot( arvore );
 	}
 

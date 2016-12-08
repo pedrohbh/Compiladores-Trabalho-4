@@ -39,9 +39,9 @@ void setNome( TreeNode *ast, char *nome )
 	char *token = nome;
 	token = strtok( nome, "\"" );
 	
-	printf("String a ser copiada: %s\n", token );
+	//printf("String a ser copiada: %s\n", token );
 	ast->nome = copiaString( token );
-	printf("String copiada: %s\n", token );
+	//printf("String copiada: %s\n", token );
 }
 
 char *getNome( TreeNode *ast )

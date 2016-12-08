@@ -3,6 +3,8 @@
 #include <string.h>
 #include "Interpretador.h"
 
+extern int debug;
+
 // Data stack -----------------------------------------------------------------
 
 #define STACK_SIZE 100
@@ -99,7 +101,8 @@ void run_ast(TreeNode *ast) {
 
 void trace( char *s )
 {
-	printf("Trace: %s\n", s );
+	if ( debug == 1 )
+		printf("Trace: %s\n", s );
 }
 
 void run_func_decl_node( TreeNode *ast )
@@ -172,7 +175,8 @@ void run_func_body_node( TreeNode *ast )
 void run_sval_node( TreeNode *ast )
 {
 	push( load( getData( ast ) ) );
-	printf("sval_node: ID = %d valor =  %d\n", getData( ast ), load( getData( ast ) ) );
+	if ( debug == 1 )
+		printf("sval_node: ID = %d valor =  %d\n", getData( ast ), load( getData( ast ) ) );
 }
 
 void run_assign_node( TreeNode *ast )
@@ -216,7 +220,8 @@ void run_stmt_list_node( TreeNode *ast )
 
 void run_number_node( TreeNode *ast )
 {
-	printf("Number: %d\n", getData( ast ) );
+	if ( debug == 1 )
+		printf("Number: %d\n", getData( ast ) );
 	push( getData( ast ) );
 }
 
@@ -234,7 +239,7 @@ void run_output_node( TreeNode *ast )
 			rec_run_ast( filho );
 	}
 	int d = pop();
-	printf( "%d\n", d );
+	printf( "%d", d );
 	//printf("%d\n", load( getData( getFilho( ast, 0 ) ) ) );	DESCOMENTE AQUI EM CASO DE EMERGÊNCIA
 }
 
@@ -262,7 +267,8 @@ void run_plus_node( TreeNode *ast )
 	}
 	int a = pop();
 	int b = pop();
-	printf("SOMA: Valor de a: %d. Valor de b: %d\n", a, b );
+	if ( debug == 1 )
+		printf("SOMA: Valor de a: %d. Valor de b: %d\n", a, b );
 	int c = a + b;
 	push( c );
 }
@@ -282,7 +288,8 @@ void run_over_node( TreeNode *ast )
 	}
 	int a = pop();
 	int b = pop();
-	printf("Divisão: Valor de a: %d. Valor de b: %d\n", a, b );
+	if ( debug == 1 )
+		printf("Divisão: Valor de a: %d. Valor de b: %d\n", a, b );
 	int c = b / a;
 	push( c );
 }
@@ -302,7 +309,8 @@ void run_times_node( TreeNode *ast )
 	}
 	int a = pop();
 	int b = pop();
-	printf("Multiplicação: Valor de a: %d. Valor de b: %d\n", a, b );
+	if ( debug == 1 )
+		printf("Multiplicação: Valor de a: %d. Valor de b: %d\n", a, b );
 	int c = b * a;
 	push( c );
 }
@@ -322,7 +330,8 @@ void run_minus_node( TreeNode *ast )
 	}
 	int a = pop();
 	int b = pop();
-	printf("Subtração: Valor de a: %d. Valor de b: %d\n", a, b );
+	if ( debug == 1 )
+		printf("Subtração: Valor de a: %d. Valor de b: %d\n", a, b );
 	int c = b - a;
 	push( c );
 }
@@ -342,7 +351,8 @@ void run_lt_node( TreeNode *ast )
 	}
 	int a = pop();
 	int b = pop();
-	printf("LESS THEN: Valor de a: %d. Valor de b: %d\n", a , b );
+	if ( debug == 1 )
+		printf("LESS THEN: Valor de a: %d. Valor de b: %d\n", a , b );
 	if ( b < a )
 		push( 1 );
 	else
@@ -386,7 +396,8 @@ void run_le_node( TreeNode *ast )
 	}
 	int a = pop();
 	int b = pop();
-	printf("LESS EQUAL: Valor de a: %d. Valor de b: %d\n", a , b );
+	if ( debug == 1 )
+		printf("LESS EQUAL: Valor de a: %d. Valor de b: %d\n", a , b );
 	if ( b <= a )
 		push( 1 );
 	else
@@ -408,7 +419,8 @@ void run_gt_node( TreeNode *ast )
 	}
 	int a = pop();
 	int b = pop();
-	printf("GREATER THEN: Valor de a: %d. Valor de b: %d\n", a , b );
+	if ( debug == 1 )
+		printf("GREATER THEN: Valor de a: %d. Valor de b: %d\n", a , b );
 	if ( b > a )
 		push( 1 );
 	else
@@ -430,7 +442,8 @@ void run_ge_node( TreeNode *ast )
 	}
 	int a = pop();
 	int b = pop();
-	printf("LESS THEN: Valor de a: %d. Valor de b: %d\n", a , b );
+	if ( debug == 1 )
+		printf("LESS THEN: Valor de a: %d. Valor de b: %d\n", a , b );
 	if ( b >= a )
 		push( 1 );
 	else
@@ -452,7 +465,8 @@ void run_eq_node( TreeNode *ast )
 	}
 	int a = pop();
 	int b = pop();
-	printf("EQUAL: Valor de a: %d. Valor de b: %d\n", a , b );
+	if ( debug == 1 )
+		printf("EQUAL: Valor de a: %d. Valor de b: %d\n", a , b );
 	if ( b == a )
 		push( 1 );
 	else
@@ -474,7 +488,8 @@ void run_neq_node( TreeNode *ast )
 	}
 	int a = pop();
 	int b = pop();
-	printf("NOT EQUAL: Valor de a: %d. Valor de b: %d\n", a , b );
+	if ( debug == 1 )
+		printf("NOT EQUAL: Valor de a: %d. Valor de b: %d\n", a , b );
 	if ( b != a )
 		push( 1 );
 	else
@@ -490,7 +505,8 @@ void run_if_node( TreeNode *ast )
 		puts("Erro em filho node. Filho 0 é nulo");
 	rec_run_ast( filho );
 	int resposta = pop();
-	printf("Resposta do if: %d\n", resposta );
+	if ( debug == 1 )
+		printf("Resposta do if: %d\n", resposta );
 	if ( resposta == 1 )
 	{
 		filho = getFilho( ast, 1 );
@@ -595,7 +611,7 @@ void run_param_list_node( TreeNode *ast )
 		{
 			if ( getKind( filho ) == PARAM_LIST_NODE )
 			{
-				puts("É PARAM LIST");
+				//puts("É PARAM LIST");
 				rec_run_ast( filho );
 			}
 			else
