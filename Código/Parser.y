@@ -45,6 +45,8 @@ char *tokenSimbolo;
 char *stringTemp;
 
 int escopoGlobal = 0;
+int aridadeGlobal = 0;
+int aridadeErrada;
 
 int numeroTemp = 0;
 int contadorId = 0;
@@ -104,6 +106,8 @@ func_body: LBRACE opt_var_decl opt_stmt_list RBRACE
 					escopoGlobal++;
 					$$ = novoNodo( FUNC_BODY_NODE );
 					adicionaFilho( $$, 2, $2, $3 );
+					setAridadeFuncao( tabelaFuncao, nomeFuncao, aridadeGlobal );
+					aridadeGlobal = 0;
 				};
 
 opt_var_decl: /* VAZIO */ { $$ = novoNodo( OPT_VAR_DECL ); } | var_decl_list { $$ = $1; };
@@ -125,11 +129,13 @@ param_list: param_list COMMA param
 				{
 					$$ = novoNodo( PARAM_LIST_NODE );
 					adicionaFilho( $$, 2, $1, $3 );
+					aridadeGlobal++;
 				}
 				| param
 				{
 					$$ = novoNodo( PARAM_LIST_NODE );
 					adicionaFilho( $$, 1, $1 );
+					aridadeGlobal++;
 					//$$ = $1;
 				};
 
@@ -307,6 +313,7 @@ user_func_call: ID { idF = check_funcao( tabelaFuncao, tokenSimbolo ); } LPAREN 
 						$$ = novoNodo( FUNC_CALL_NODE );
 						adicionaFilho( $$, 1, $4 );
 						setData( $$, idF );
+						aridadeGlobal = 0;
 						//free( tokenSimbolo );
 					};
 
@@ -314,11 +321,13 @@ opt_arg_list: /* VAZIO */ { $$ = novoNodo( OPT_ARG_LIST ); } | arg_list { $$ = $
 
 arg_list: arg_list COMMA arith_expr 
 			{
+				aridadeGlobal++;
 				$$ = novoNodo( ARG_LIST_NODE );
 				adicionaFilho( $$, 2, $1, $3 );
 			}
 			| arith_expr
 			{
+				aridadeGlobal++;
 				$$ = $1;
 			};
 
@@ -419,7 +428,11 @@ int check_funcao(TabelaFuncao *tb, char *nome )
         printf("SEMANTIC ERROR (%d): function '%s' was not declared.\n", yylineno, nome);
         exit(1);
     }
-
+	if ( idx == -2 )
+	{
+		printf("SEMANTIC ERROR (%d): function ’%s’ was called with '%d' arguments but declared with '%d' parameters.\n", yylineno, nome, aridadeErrada, getAridadeFuncao( tb, nome )  );
+		exit( 1 );
+	}
 	TabelaFuncao *it = getNodoFuncao( tb, nome );
 	insereNovaLinhaFuncao( it, yylineno );
 	return idx;
@@ -472,10 +485,10 @@ int main()
 	//printf("Resultado: %d\n", resultado);
 	if ( resultado == 0 )
 	{
-		//puts("PARSER SUCESSUFUL");
+		puts("PARSER SUCESSUFUL");
 		//puts("Opa");
-		stdin = fopen(ctermid(NULL), "r");
-      run_ast(arvore);
+		//stdin = fopen(ctermid(NULL), "r");
+      //run_ast(arvore);
 		//printf("PARSE SUCESSFUL!\n");
 		//imprimeTabelaSimbolos( tabelaSimbolos );
 		//print_dot( arvore );

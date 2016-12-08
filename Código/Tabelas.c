@@ -3,7 +3,10 @@
 #include <stdlib.h>
 #include "Tabelas.h"
 
+extern int aridadeErrada;
+
 extern int escopoGlobal;
+extern int aridadeGlobal;
 
 #define SYMBOL_MAX_SIZE 128
 
@@ -62,6 +65,7 @@ struct tabelaFuncao
 {
 	char *nome;
 	int id;
+	int aridade;
 	LinhaLista *linhas;
 	struct tabelaFuncao *proximoPtr;
 };
@@ -78,12 +82,33 @@ int buscaTabelaFuncao( TabelaFuncao *tb, char *nome )
 	for ( it = tb; it != NULL; it = it->proximoPtr )
 	{
 		if ( strcmp( nome, it->nome ) == 0 )
-			return it->id;
+		{
+			if ( it->aridade != aridadeGlobal )
+			{
+				aridadeErrada = aridadeGlobal;
+				return -2;
+			}
+			else
+				return it->id;
+		}
 
 		i++;
 	}
 
 	return -1;
+}
+
+int getAridadeFuncao( TabelaFuncao *tb, char *nome )
+{
+	TabelaFuncao *it;
+	//int i = 0;
+	for ( it = tb; it != NULL; it = it->proximoPtr )
+	{
+		if ( strcmp( nome, it->nome ) == 0 )
+			return it->aridade;
+	}
+
+	return 0;
 }
 
 TabelaFuncao *getNodoFuncao( TabelaFuncao *tb, char *nome )
@@ -139,7 +164,15 @@ void insereNovaLinhaFuncao( TabelaFuncao *nodo, int linha )
 		it->proximoPtr->proximoPtr = NULL;
 	}
 }		
-			
+
+void setAridadeFuncao( TabelaFuncao *tb, char *nomeFuncao, int aridade )
+{
+	TabelaFuncao *it;
+	for ( it = tb; it != NULL; it = it->proximoPtr )
+		if ( strcmp( nomeFuncao, it->nome ) == 0 )
+			break;
+	it->aridade = aridade;
+}			
 
 TabelaFuncao *insereTabelaFuncao( TabelaFuncao *tb, char *nome, int linha, int id )
 {
@@ -156,6 +189,7 @@ TabelaFuncao *insereTabelaFuncao( TabelaFuncao *tb, char *nome, int linha, int i
 	novoElemento->linhas = NULL;
 	novoElemento->proximoPtr = NULL;
 	novoElemento->id = id;
+	novoElemento->aridade = 0;
 	insereNovaLinhaFuncao( novoElemento, linha );
 
 

@@ -34,6 +34,10 @@ void insereNovaLinhaFuncao( TabelaFuncao *nodo, int linha );
 
 TabelaFuncao *insereTabelaFuncao( TabelaFuncao *tb, char *nome, int linha, int id );
 
+void setAridadeFuncao( TabelaFuncao *tb, char *nomeFuncao, int aridade );
+
+int getAridadeFuncao( TabelaFuncao *tb, char *nome );
+
 //--------------------------------------Simbolos---------------------------------------------
 int buscaTabelaSimbolos( TabelaSimbolos *tb, char *nome );
 
