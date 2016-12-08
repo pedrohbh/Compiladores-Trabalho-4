@@ -30,7 +30,7 @@ void yyerror(char const *s);
 LitTable *lt;
 
 
-TabelaSimbolos *newVar( TabelaSimbolos *tb,  char *nome, int id, int escopo );
+TabelaSimbolos *newVar( TabelaSimbolos *tb,  char *nome, int id );
 int check_var(TabelaSimbolos *tb, char *nome );
 
 TabelaFuncao *novaFuncao( TabelaFuncao *tb,  char *nome, int id );
@@ -43,16 +43,10 @@ extern char *yytext;
 char *nomeFuncao;
 char *tokenSimbolo;
 char *stringTemp;
-
-int escopoGlobal = 0;
-int aridadeGlobal = 0;
-int aridadeErrada;
-
 int numeroTemp = 0;
 int contadorId = 0;
 int contadorFuncaoId = 0;
 int idF;
-
 TabelaSimbolos *tabelaSimbolos = NULL;
 TabelaFuncao *tabelaFuncao = NULL;
 TabelaSimbolos *auxiliarSimbolos;
@@ -103,11 +97,8 @@ func_header: ret_type ID {
 
 func_body: LBRACE opt_var_decl opt_stmt_list RBRACE
 				{
-					escopoGlobal++;
 					$$ = novoNodo( FUNC_BODY_NODE );
 					adicionaFilho( $$, 2, $2, $3 );
-					setAridadeFuncao( tabelaFuncao, nomeFuncao, aridadeGlobal );
-					aridadeGlobal = 0;
 				};
 
 opt_var_decl: /* VAZIO */ { $$ = novoNodo( OPT_VAR_DECL ); } | var_decl_list { $$ = $1; };
@@ -129,20 +120,18 @@ param_list: param_list COMMA param
 				{
 					$$ = novoNodo( PARAM_LIST_NODE );
 					adicionaFilho( $$, 2, $1, $3 );
-					aridadeGlobal++;
 				}
 				| param
 				{
 					$$ = novoNodo( PARAM_LIST_NODE );
 					adicionaFilho( $$, 1, $1 );
-					aridadeGlobal++;
 					//$$ = $1;
 				};
 
 param: INT ID
 		{
 			$$ = novoNodo( SVAL_NODE );
-			tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId, escopoGlobal );
+			tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId );
 			setData( $$, contadorId++ );
 			//printf("VAR: %s\n", tokenSimbolo );
 			//free( tokenSimbolo );
@@ -151,7 +140,7 @@ param: INT ID
 		| INT ID LBRACK RBRACK
 		{
 			$$ = novoNodo( CVAL_NODE );
-			tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId++, escopoGlobal );
+			tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId++ );
 			//free( tokenSimbolo );
 		};
 
@@ -165,12 +154,12 @@ var_decl_list: var_decl_list var_decl
 						$$ = $1;
 					};
 
-var_decl: INT ID { tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId, escopoGlobal ); } SEMI
+var_decl: INT ID { tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId ); } SEMI
 			{
 				$$ = novoNodo( SVAL_NODE );
 				setData( $$, contadorId++ );									
 			}
-			| INT ID { tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId, escopoGlobal ); } LBRACK NUM RBRACK SEMI
+			| INT ID { tabelaSimbolos = newVar( tabelaSimbolos, tokenSimbolo, contadorId ); } LBRACK NUM RBRACK SEMI
 			{
 				$$ = novoNodo( CVAL_NODE );
 				setData( $$, contadorId++ );
@@ -313,7 +302,6 @@ user_func_call: ID { idF = check_funcao( tabelaFuncao, tokenSimbolo ); } LPAREN 
 						$$ = novoNodo( FUNC_CALL_NODE );
 						adicionaFilho( $$, 1, $4 );
 						setData( $$, idF );
-						aridadeGlobal = 0;
 						//free( tokenSimbolo );
 					};
 
@@ -321,13 +309,11 @@ opt_arg_list: /* VAZIO */ { $$ = novoNodo( OPT_ARG_LIST ); } | arg_list { $$ = $
 
 arg_list: arg_list COMMA arith_expr 
 			{
-				aridadeGlobal++;
 				$$ = novoNodo( ARG_LIST_NODE );
 				adicionaFilho( $$, 2, $1, $3 );
 			}
 			| arith_expr
 			{
-				aridadeGlobal++;
 				$$ = $1;
 			};
 
@@ -428,11 +414,7 @@ int check_funcao(TabelaFuncao *tb, char *nome )
         printf("SEMANTIC ERROR (%d): function '%s' was not declared.\n", yylineno, nome);
         exit(1);
     }
-	if ( idx == -2 )
-	{
-		printf("SEMANTIC ERROR (%d): function ’%s’ was called with '%d' arguments but declared with '%d' parameters.\n", yylineno, nome, aridadeErrada, getAridadeFuncao( tb, nome )  );
-		exit( 1 );
-	}
+
 	TabelaFuncao *it = getNodoFuncao( tb, nome );
 	insereNovaLinhaFuncao( it, yylineno );
 	return idx;
@@ -441,7 +423,7 @@ int check_funcao(TabelaFuncao *tb, char *nome )
 }
 
 
-TabelaSimbolos *newVar( TabelaSimbolos *tb,  char *nome, int id, int escopo )
+TabelaSimbolos *newVar( TabelaSimbolos *tb,  char *nome, int id )
 {
 	int idx = buscaTabelaSimbolos( tb, nome );
 	
@@ -451,7 +433,7 @@ TabelaSimbolos *newVar( TabelaSimbolos *tb,  char *nome, int id, int escopo )
 		exit( 1 );
 	}
 
-	tb = insereTabelaSimbolos( tb, nome,  yylineno, id, escopo );
+	tb = insereTabelaSimbolos( tb, nome,  yylineno, id );
 
 	return tb;
 
@@ -485,10 +467,9 @@ int main()
 	//printf("Resultado: %d\n", resultado);
 	if ( resultado == 0 )
 	{
-		puts("PARSER SUCESSUFUL");
 		//puts("Opa");
-		//stdin = fopen(ctermid(NULL), "r");
-      //run_ast(arvore);
+		stdin = fopen(ctermid(NULL), "r");
+      run_ast(arvore);
 		//printf("PARSE SUCESSFUL!\n");
 		//imprimeTabelaSimbolos( tabelaSimbolos );
 		//print_dot( arvore );

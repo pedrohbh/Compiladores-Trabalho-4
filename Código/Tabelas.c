@@ -3,11 +3,6 @@
 #include <stdlib.h>
 #include "Tabelas.h"
 
-extern int aridadeErrada;
-
-extern int escopoGlobal;
-extern int aridadeGlobal;
-
 #define SYMBOL_MAX_SIZE 128
 
 struct linhaLista
@@ -65,7 +60,6 @@ struct tabelaFuncao
 {
 	char *nome;
 	int id;
-	int aridade;
 	LinhaLista *linhas;
 	struct tabelaFuncao *proximoPtr;
 };
@@ -82,33 +76,12 @@ int buscaTabelaFuncao( TabelaFuncao *tb, char *nome )
 	for ( it = tb; it != NULL; it = it->proximoPtr )
 	{
 		if ( strcmp( nome, it->nome ) == 0 )
-		{
-			if ( it->aridade != aridadeGlobal )
-			{
-				aridadeErrada = aridadeGlobal;
-				return -2;
-			}
-			else
-				return it->id;
-		}
+			return it->id;
 
 		i++;
 	}
 
 	return -1;
-}
-
-int getAridadeFuncao( TabelaFuncao *tb, char *nome )
-{
-	TabelaFuncao *it;
-	//int i = 0;
-	for ( it = tb; it != NULL; it = it->proximoPtr )
-	{
-		if ( strcmp( nome, it->nome ) == 0 )
-			return it->aridade;
-	}
-
-	return 0;
 }
 
 TabelaFuncao *getNodoFuncao( TabelaFuncao *tb, char *nome )
@@ -164,15 +137,7 @@ void insereNovaLinhaFuncao( TabelaFuncao *nodo, int linha )
 		it->proximoPtr->proximoPtr = NULL;
 	}
 }		
-
-void setAridadeFuncao( TabelaFuncao *tb, char *nomeFuncao, int aridade )
-{
-	TabelaFuncao *it;
-	for ( it = tb; it != NULL; it = it->proximoPtr )
-		if ( strcmp( nomeFuncao, it->nome ) == 0 )
-			break;
-	it->aridade = aridade;
-}			
+			
 
 TabelaFuncao *insereTabelaFuncao( TabelaFuncao *tb, char *nome, int linha, int id )
 {
@@ -189,7 +154,6 @@ TabelaFuncao *insereTabelaFuncao( TabelaFuncao *tb, char *nome, int linha, int i
 	novoElemento->linhas = NULL;
 	novoElemento->proximoPtr = NULL;
 	novoElemento->id = id;
-	novoElemento->aridade = 0;
 	insereNovaLinhaFuncao( novoElemento, linha );
 
 
@@ -217,7 +181,6 @@ struct tabelaSimbolos
 {
 	char *nome;
 	int id;
-	int escopo;
 	LinhaLista *linhas;
 	struct tabelaSimbolos *proximoPtr;
 };
@@ -230,12 +193,7 @@ int buscaTabelaSimbolos( TabelaSimbolos *tb, char *nome )
 	for ( it = tb; it != NULL; it = it->proximoPtr )
 	{
 		if ( strcmp( nome, it->nome ) == 0 )
-		{
-			if ( it->escopo == escopoGlobal )
-				return it->id;
-			else
-				return -1;
-		}
+			return it->id;
 
 		i++;
 	}
@@ -298,7 +256,7 @@ void insereNovaLinha( TabelaSimbolos *nodo, int linha )
 }		
 			
 
-TabelaSimbolos *insereTabelaSimbolos( TabelaSimbolos *tb, char *nome, int linha, int id, int escopo )
+TabelaSimbolos *insereTabelaSimbolos( TabelaSimbolos *tb, char *nome, int linha, int id )
 {
 	TabelaSimbolos *novoElemento = (TabelaSimbolos *)malloc( sizeof(TabelaSimbolos) );
 	
@@ -313,7 +271,6 @@ TabelaSimbolos *insereTabelaSimbolos( TabelaSimbolos *tb, char *nome, int linha,
 	novoElemento->id = id;
 	novoElemento->linhas = NULL;
 	novoElemento->proximoPtr = NULL;
-	novoElemento->escopo = escopo;
 	insereNovaLinha( novoElemento, linha );
 
 
